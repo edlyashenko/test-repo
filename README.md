@@ -10,7 +10,7 @@
 
 ## Практика з кодом починається з уроку 2
 
-Другий урок присвячено Context Engineering: як дати агенту потрібні інструкції та перевірити їх у новій сесії. Працюй за [десятьма кроками](context-check.html) або [публічною сторінкою](https://genkovich.github.io/ai-work-check/context-check.html). У [підготовці](docs/lesson-2/setup.md) є завантаження, Git, Node, обраний агент і встановлення SDD; у [промптах](docs/lesson-2/prompts.md) готові повідомлення.
+Другий урок присвячено Context Engineering: як дати агенту потрібні інструкції та перевірити їх у новій сесії. Перед практикою прочитай [пояснення контексту з прикладами](docs/lesson-2/concepts.md). Працюй за [десятьма кроками](context-check.html) або [публічною сторінкою](https://genkovich.github.io/ai-work-check/context-check.html). У [підготовці](docs/lesson-2/setup.md) є завантаження, Git, Node, обраний агент і встановлення SDD; у [промптах](docs/lesson-2/prompts.md) готові повідомлення.
 
 ### Що вже є
 
