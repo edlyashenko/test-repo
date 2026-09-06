@@ -1,0 +1,21 @@
+{
+  "name": "agent-ops-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local-first dashboard over Claude Code session logs. Practice repo for the Agentic Engineering mini-course: the skeleton the course starts from.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "predemo": "node scripts/pin-fixture-mtimes.mjs",
+    "demo": "node --env-file=.env.fixtures server.js",
+    "dev": "node --watch server.js",
+    "preverify": "node scripts/pin-fixture-mtimes.mjs",
+    "verify": "node --test --test-reporter=spec \"test/*.test.js\""
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
