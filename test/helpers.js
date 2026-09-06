@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 export const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const fixtureHome = join(repoRoot, 'fixtures', 'claude-home');
 
-process.env.CLAUDE_HOME ??= fixtureHome;
+// Tests must never inherit a caller's personal Claude directory.
+process.env.CLAUDE_HOME = fixtureHome;
 
 export async function startServer() {
   const { app } = await import('../server.js');

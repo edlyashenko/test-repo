@@ -1,11 +1,11 @@
 # agent-ops-dashboard, пакет мінікурсу
 
-Це стартовий CLAUDE.md пакета. Урок 2 його розширює за шаблоном `templates/02-context-pack.md`.
+Це стартовий CLAUDE.md пакета. В уроці 2 власний контекст створюється в `docs/practice/02-context.md` за шаблоном `templates/02-context-pack.md`, а передача роботи зберігається в `docs/practice/handoff.md`. Переписувати цей кореневий файл для завершення вправи не потрібно.
 
 ## Запуск і перевірка
 
 - `npm run verify` перед кожним комітом. Зараз у наборі два тести на скелет; кожна задача додає свої.
-- `npm run demo` запускає дашборд на фікстурах: `CLAUDE_HOME=./fixtures/claude-home` з `.env.fixtures`.
+- `npm run demo` запускає `scripts/demo.mjs`: він явно задає абсолютний шлях до `fixtures/claude-home` і порт 4180, незалежно від успадкованих `CLAUDE_HOME` та `PORT`. `.env.fixtures` цей launcher не читає.
 - Домашню теку `~/.claude` не читати і не брати як зразок формату. Формат сесій видно у `fixtures/claude-home/`.
 
 ## Тести

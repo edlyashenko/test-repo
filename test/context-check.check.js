@@ -129,14 +129,14 @@ test('page has no uploads, contact fields, external assets, network calls or dep
   assert.doesNotMatch(html,/<script[^>]+src=|<link[^>]+href=|<iframe|type="(?:file|email|tel)"|\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/);
   assert.match(html,/connect-src 'none'/);
   const links=[...html.matchAll(/href="([^"]+)"/g)].map(x=>x[1]);
-  assert.deepEqual(links,['https://github.com/genkovich/agentic-engineering-mini-kit','https://code.claude.com/docs/en/memory']);
+  assert.deepEqual(links,['https://github.com/genkovich/agentic-engineering-mini-kit','https://code.visualstudio.com/download','https://nodejs.org/en/download','https://code.claude.com/docs/en/quickstart','https://code.claude.com/docs/en/troubleshoot-install','https://code.claude.com/docs/en/memory']);
 });
 
 test('all copy controls target an inline block, with handoff before fresh session',()=>{
   for(const [,target]of html.matchAll(/data-copy="([^"]+)"/g))assert.ok(html.includes('<pre id="'+target+'">'));
   assert.ok(html.indexOf('id="prompt-8"')<html.indexOf('id="prompt-9"'));
   for(const command of ['npm ci','npm run verify','npm run demo','git status --short','git diff','git diff --cached'])assert.ok(html.includes(command));
-  assert.match(html,/SDD чи встановлення плагінів[^<]*не обов’язкові/);
+  assert.match(html,/SDD й плагіни зараз не потрібні/);
 });
 
 test('manual review does not mark the fresh-agent step complete',()=>{
@@ -189,4 +189,55 @@ test('new checks do not join the two-test baseline or change its scripts',()=>{
   assert.equal(pkg.scripts.verify,'node --test --test-reporter=spec "test/*.test.js"');
   assert.equal([...read('test/skeleton.test.js').matchAll(/^test\(/gm)].length,2);
   assert.deepEqual(fs.readdirSync(new URL('test/',root)).filter(x=>x.endsWith('.test.js')),['skeleton.test.js']);
+});
+
+test('follow-along starts with ZIP and names the folder, editor and terminal',()=>{
+  assert.ok(html.indexOf('Code → Download ZIP') < html.indexOf('git clone '));
+  for(const detail of ['Extract All / Видобути все','File → Open Folder','Terminal → New Terminal','node --version','npm --version','v22.','v24.','ENOENT','package.json'])assert.ok(html.includes(detail),detail);
+  assert.match(html,/Початковий ZIP залиш для порівняння/);
+  assert.match(html,/прийняте запрошення/);
+});
+
+test('setup and page carry concrete OS installers, version check and first prompt',()=>{
+  const setup=read('docs/lesson-2/setup.md');
+  for(const value of ['curl -fsSL https://claude.ai/install.sh | bash','irm https://claude.ai/install.ps1 | iex','claude --version','/login','Нічого не змінюй і не запускай команди. Особисті логи не відкривай.']){
+    assert.ok(html.includes(value),value);assert.ok(setup.includes(value),value);
+  }
+  assert.match(html,/Windows, саме PowerShell/);
+  assert.match(html,/Під час першого запуску пройди вхід/);
+  assert.match(html,/Встановлена програма ще потребує акаунта/);
+  assert.match(html,/сама по собі не забирає технічного права запису/);
+});
+
+test('commands have waiting guidance and example output is not learner evidence',()=>{
+  assert.match(html,/<pre id="command-2"><code>npm ci<\/code>/);
+  assert.match(html,/<pre id="command-verify"><code>npm run verify<\/code>/);
+  assert.match(html,/Дочекайся завершення: термінал знову запропонує/);
+  assert.match(html,/приклад очікування, не результат твого запуску/);
+  assert.ok(html.includes('tests 2\npass 2\nfail 0'));
+  assert.match(html,/Він зайнятий сервером/);
+});
+
+test('same fresh-session route follows saved handoff in all L2 instructions',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/setup.md','docs/lesson-2/prompts.md','templates/02-context-pack.md']){
+    const source=read(path);assert.ok(source.includes('/exit'),path);assert.ok(source.includes('resume чи continue')||source.includes('resume або continue'),path);assert.ok(source.includes('claude'),path);assert.ok(!source.includes('/clear'),path);
+  }
+  assert.match(html,/File → Save As/);
+  assert.match(html,/File → New File/);
+  const rootRules=read('CLAUDE.md');assert.match(rootRules,/docs\/practice\/02-context\.md/);assert.doesNotMatch(rootRules,/Урок 2 його розширює/);
+});
+
+test('demo explanations match the explicit fixture-only launcher',()=>{
+  const pkg=JSON.parse(read('package.json'));assert.equal(pkg.scripts.demo,'node scripts/demo.mjs');
+  for(const path of ['context-check.html','docs/lesson-2/setup.md','templates/02-context-pack.md'])assert.ok(read(path).includes('scripts/demo.mjs'),path);
+  assert.ok(read('scripts/demo.mjs').includes("PORT: '4180'"));
+});
+
+test('ZIP comparison command and its exit codes agree across instructions',()=>{
+  const command='node scripts/compare-kit.mjs "<path to unpacked untouched kit>"';
+  for(const path of ['docs/lesson-2/setup.md','docs/lesson-2/prompts.md','README.md','templates/02-context-pack.md'])assert.ok(read(path).includes(command),path);
+  assert.ok(html.includes('node scripts/compare-kit.mjs "&lt;path to unpacked untouched kit&gt;"'));
+  for(const word of ['ADDED','CHANGED','REMOVED','Thumbs.db','.DS_Store'])assert.ok(html.includes(word),word);
+  assert.match(html,/Код завершення 1 означає знайдені відмінності/);
+  assert.ok(fs.existsSync(new URL('scripts/compare-kit.mjs',root)));
 });

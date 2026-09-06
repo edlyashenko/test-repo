@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node server.js",
     "predemo": "node scripts/pin-fixture-mtimes.mjs",
-    "demo": "node --env-file=.env.fixtures server.js",
+    "demo": "node scripts/demo.mjs",
     "dev": "node --watch server.js",
     "preverify": "node scripts/pin-fixture-mtimes.mjs",
     "verify": "node --test --test-reporter=spec \"test/*.test.js\""

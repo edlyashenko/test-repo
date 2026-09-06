@@ -22,7 +22,7 @@ frontend: "server-rendered HTML (template literals) + vanilla CSS"
 
 - Language / runtime: Node.js 20+, ES modules (`package.json:5-9`); `.nvmrc` = 22, CI ганяє 22 і 24 на трьох ОС (`.github/workflows/verify.yml:9-12`)
 - Frameworks: Express ^5.1.0, єдина залежність (`package.json:18-20`)
-- Build / test / lint: `npm run verify` = `node --test test/*.test.js` (два тести на фікстурах) з `preverify`, який вирівнює mtime фікстур (`package.json:11-17`, `scripts/pin-fixture-mtimes.mjs`). Без build step, без лінтера, без TypeScript. `npm run demo` = сервер на фікстурах через `--env-file=.env.fixtures`.
+- Build / test / lint: `npm run verify` = `node --test test/*.test.js` (два тести на фікстурах) з `preverify`, який вирівнює mtime фікстур (`package.json:11-17`, `scripts/pin-fixture-mtimes.mjs`). Без build step, без лінтера, без TypeScript. `npm run demo` = `node scripts/demo.mjs`: launcher явно задає абсолютний шлях до фікстур і порт 4180 перед завантаженням сервера.
 
 ## C4 - system as it is
 
@@ -62,7 +62,7 @@ C4Container
 - **Tests:** `node --test`, кожен suite стартує застосунок через `startServer()` (`test/helpers.js:10-23`) на `CLAUDE_HOME=fixtures/claude-home` (`test/helpers.js:5-8`); підрахунки з диска через `test/oracle.js` (`sessionFiles` з `exactDepth`, `countAcross`, `jsonlRecords`), без shell-команд (`test/oracle.js:1-9`). mtime фікстур вирівнюється перед кожним прогоном (`scripts/pin-fixture-mtimes.mjs`, `package.json:15`).
 - **Inter-module communication:** прямі виклики функцій server → lib → views (`server.js:13-24`). Без подій, без SSE.
 - **UI / styling:** без фреймворку. HTML з template literals, CSP `default-src 'none'; style-src 'self'; script-src 'self'` (`views/layout.js:17`), CSS custom properties, моноширинний шрифт (`public/style.css:1-18`).
-- **Line endings / env:** `* text=auto eol=lf` (`.gitattributes:1`); `.env.fixtures` задає `CLAUDE_HOME` і `PORT` для `demo` (`.env.fixtures:1-2`).
+- **Line endings / env:** `* text=auto eol=lf` (`.gitattributes:1`); `scripts/demo.mjs` задає `CLAUDE_HOME` на `fixtures/claude-home` і `PORT=4180`, перекриваючи успадковані значення. `.env.fixtures` лишається окремим прикладом налаштувань; `npm run demo` його не читає. `test/helpers.js` також явно задає навчальний `CLAUDE_HOME` перед імпортом сервера.
 
 ## Datastores
 
