@@ -1,0 +1,82 @@
+{
+  "slug": "session-index",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Додати listSessions в адаптер Claude: індекс сесій з readdir + stat",
+      "layer": "infra",
+      "deps": [],
+      "acs": [
+        "AC-01",
+        "AC-02",
+        "AC-02b",
+        "AC-03",
+        "AC-04"
+      ],
+      "dod": "listSessions на фікстурах дає шість записів від свіжих із tie-break за sessionId, [] на відсутній теці, пропускає файл замість теки і не читає вміст; тест був GOOD red",
+      "files_hint": [
+        "lib/claude/index.js",
+        "test/session-index.test.js"
+      ],
+      "file": "docs/features/session-index/tasks/t1-list-sessions.md"
+    },
+    {
+      "id": "T2",
+      "title": "Маршрут переліку сесій у JSON з лімітом з адреси",
+      "layer": "ports",
+      "deps": [
+        "T1"
+      ],
+      "acs": [
+        "AC-01",
+        "AC-01b",
+        "AC-01c"
+      ],
+      "dod": "маршрут переліку через getSource('claude') віддає записи від свіжих; limit=2 дає два найсвіжіші, невалідний або відсутній limit дає 50; тест був GOOD red",
+      "files_hint": [
+        "server.js",
+        "test/session-index.test.js"
+      ],
+      "file": "docs/features/session-index/tasks/t2-sessions-route.md"
+    },
+    {
+      "id": "T3",
+      "title": "Сторінка переліку сесій замість «No slice is wired up yet»",
+      "layer": "ui",
+      "deps": [
+        "T1"
+      ],
+      "acs": [
+        "AC-01",
+        "AC-01d",
+        "AC-02"
+      ],
+      "dod": "головна сторінка рендерить таблицю з sessionId, похідним шляхом проєкту з позначкою, розміром і часом; порожня тека дає порожній стан без таблиці; скелетні тести без змін; тест був GOOD red",
+      "files_hint": [
+        "views/sessions.js",
+        "server.js",
+        "test/session-index.test.js"
+      ],
+      "file": "docs/features/session-index/tasks/t3-sessions-page.md"
+    },
+    {
+      "id": "T4",
+      "title": "Приймальні тести зрізу: інваріант з оракулом, Unchanged, час відповіді",
+      "layer": "tests",
+      "deps": [
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "acs": [
+        "AC-04",
+        "AC-05"
+      ],
+      "dod": "кількість у переліку дорівнює sessionFiles(exactDepth 2) з test/oracle.js; шість різних mtime; битий файл у переліку; медіана з пʼяти запитів ≤ 100 ms; test/skeleton.test.js без правок",
+      "files_hint": [
+        "test/session-index.test.js"
+      ],
+      "file": "docs/features/session-index/tasks/t4-acceptance-tests.md"
+    }
+  ]
+}

@@ -1,11 +1,12 @@
 // Ground truth straight off disk, in plain Node. The original acceptance tests shelled out to
 // find / grep / wc / jq; that made `npm run verify` fail on Windows and on any machine without jq.
 // Same oracles, same semantics, no external tools.
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 
 // `find <dir> -name '*.jsonl' -type f` ; with exactDepth = 2 it is `-mindepth 2 -maxdepth 2`,
 // i.e. only <project>/<sessionId>.jsonl, not the subagent transcripts nested deeper.
+// lstat, not stat: a symlink is not a session, so the oracle must not follow it.
 export function sessionFiles(projectsDir, { exactDepth = null } = {}) {
   const out = [];
   const walk = (dir, depth) => {
@@ -14,7 +15,7 @@ export function sessionFiles(projectsDir, { exactDepth = null } = {}) {
     for (const name of names) {
       const p = join(dir, name);
       let st;
-      try { st = statSync(p); } catch { continue; }
+      try { st = lstatSync(p); } catch { continue; }
       if (st.isDirectory()) walk(p, depth + 1);
       else if (st.isFile() && name.endsWith('.jsonl') && (exactDepth === null || depth === exactDepth)) out.push(p);
     }

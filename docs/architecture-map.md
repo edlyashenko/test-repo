@@ -2,7 +2,7 @@
 status: current
 mode: current
 updated_at: "2026-09-06"
-reflects_commit: "kit-baseline"
+reflects_commit: "3d5e877"
 language: "node 20+ (ESM)"
 build_cmd: ""
 test_cmd: "npm run verify"
@@ -16,8 +16,7 @@ frontend: "server-rendered HTML (template literals) + vanilla CSS"
 > The **current** architecture (what exists today), produced by `survey` and read by
 > specify / design / data-model / implement. Refresh with `survey` when the repo drifts past
 > `reflects_commit`. Generated; no hand-maintained `docs/architecture.md` exists in this repo, so
-> this map is the reference. `reflects_commit: kit-baseline` = кореневий коміт пакета
-> (`git log --oneline | tail -1`).
+> this map is the reference. `reflects_commit` = кореневий коміт пакета (`git log --oneline | tail -1`).
 
 ## Stack
 
@@ -90,7 +89,7 @@ C4Container
 
 ## Constraints & known tech-debt
 
-- **Реєстр джерел підключений лише до `/api/health`** (`server.js:4-5,14`). Сторінка бере `claudeHome()` прямим імпортом. Перша фіча, що показує дані, вирішує: читати через реєстр чи напряму; це рішення варто зафіксувати, бо на ньому тримається обіцянка «другий адаптер без змін `server.js`».
+- **Реєстр джерел підключений лише до `/api/health`** (`server.js:4-5,14`). Сторінка бере `claudeHome()` прямим імпортом. Коментар у реєстрі обіцяє в адаптері `listSessions()` і `readSession(id)` (`lib/sources.js:7-8`), а адаптер Claude реєструє лише `id`, `label`, `home` (`lib/claude/index.js:14-18`): контракт описаний, але не виконаний. Перша фіча, що показує дані, вирішує: читати через реєстр чи напряму; це рішення варто зафіксувати, бо на ньому тримається обіцянка «другий адаптер без змін `server.js`».
 - **Диск ще не читається.** У `lib/claude/` немає жодного `readdir`/`stat`; межа «лише налаштована тека, нічого поза нею» існує лише як намір у `docs/idea-brief.md` §Межі.
 - **mtime фікстур живе поза git.** Після clone усі файли сесій мають одну дату; `preverify`/`predemo` вирівнюють їх (`scripts/pin-fixture-mtimes.mjs`). Будь-який тест на порядок «від свіжих» коректний лише після цього кроку.
 - **Тести без shell.** CI ганяє Windows (`.github/workflows/verify.yml:10`); `find`/`grep`/`wc`/`jq` у тестах там відсутні. Оракули в `test/oracle.js`.
