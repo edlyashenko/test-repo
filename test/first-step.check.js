@@ -126,14 +126,22 @@ test('offline UI has no remote resource, storage or unsafe text-to-HTML sinks', 
   assert.doesNotMatch(html, /<script[^>]+src=|<link[^>]+href=|\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket|localStorage|sessionStorage|innerHTML|outerHTML|insertAdjacentHTML|document\.write/);
   assert.match(html,/connect-src 'none'/);assert.match(html,/el\.textContent=text/);
   assert.doesNotMatch(html,/checked\s*=|\.checked\s*=/);
-  assert.match(html,/disabled>Завантажити Markdown/);assert.match(html,/disabled>Завантажити result\.json/);
+  assert.match(html,/disabled>Зберегти результат текстом/);assert.match(html,/disabled>Зберегти для повторного проходження/);
   assert.match(html,/complete=result\.answered===10/);
 });
 
 test('one shopping-list illustration is explicit and no session/title prerequisite remains', () => {
-  assert.ok(html.indexOf('Уяви просту сторінку зі списком покупок.') < html.indexOf('id="questions"'));
-  assert.match(html,/Це лише ілюстрація, робити такий список не потрібно/);
+  assert.ok(html.indexOf('Уявімо невеликий застосунок зі списком покупок.') >= 0);
+  assert.ok(html.indexOf('Уявімо невеликий застосунок зі списком покупок.') < html.indexOf('id="questions"'));
+  assert.match(html,/Створювати застосунок зараз не потрібно/);
   assert.match(fallback,/Це лише ілюстрація: створювати такий список не потрібно/);
   assert.doesNotMatch(html,/Codex|без заголовка|назву кожної розмови/);
   assert.match(fallback,/Download ZIP/);assert.match(fallback,/\.\.\/first-step\.html/);
+});
+
+test('questions explain development tasks and have substantial teaching hints', () => {
+  assert.match(A.QUESTIONS[0].text,/змінити код/);
+  assert.match(A.QUESTIONS[2].text,/потрібний код/);
+  for(const q of A.QUESTIONS) assert.ok(q.hint.length >= 140);
+  assert.doesNotMatch(html,/Технічні знання для анкети не потрібні|анкета українською/i);
 });
