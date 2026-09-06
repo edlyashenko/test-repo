@@ -41,7 +41,7 @@ status: "done"
 
 > Shared primitives: `esc()` для HTML-escaping (`views/layout.js:3-9`), `empty()` для порожнього стану (`views/layout.js:35-37`); готові стилі таблиці, `.num` для чисел, `.dim`, `.sub` (`public/style.css:32-39`). Closest UI precedent: порожня сторінка `/` = `layout({ title, body })` з `empty(...)` (`server.js:17-24`).
 >
-> — `docs/architecture-map.md §Frontend / UI foundation, abridged` · full text: [architecture-map.md](../../architecture-map.md)
+> — `docs/architecture-map.md §Frontend / UI foundation, abridged` · історичне джерело того прогону; у поточній практиці карту створює survey.
 
 > шлях проєкту з розміткою або службовими символами в імені теки: сторінка показує його як текст, розмітка не виконується.
 >

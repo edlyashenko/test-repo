@@ -17,5 +17,3 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm ci
       - run: npm run verify
-      - name: Check learning tools and fixture isolation
-        run: node --test --test-reporter=spec test/context-check.check.js test/demo-environment.check.js test/demo-listen.check.js test/compare-kit.check.js test/first-step.check.js

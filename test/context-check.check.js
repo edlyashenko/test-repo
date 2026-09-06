@@ -1,5 +1,7 @@
 // Standalone materials checks: node --test test/context-check.check.js
 // Not named *.test.js: npm run verify remains the two-test runtime baseline.
+// Release-only starter checks. Do not add to learner CI: survey creates
+// the initially absent documents and later lessons intentionally evolve the app.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -115,7 +117,7 @@ test('Markdown supports partial and complete progress without verified-proof cla
   const partial=C.markdown(checked,'2026-09-06T12:00:00.000Z');assert.match(partial,/Позначено: 1 із 10/);
   assert.equal([...partial.matchAll(/^- \[x\]/gm)].length,1);assert.equal([...partial.matchAll(/^- \[ \]/gm)].length,9);
   const complete=C.markdown(all(true));assert.equal([...complete.matchAll(/^- \[x\]/gm)].length,10);
-  for(const text of [partial,complete]){assert.match(text,/не підтвердження виконання команд або якості коду/);assert.match(text,/Фактичні результати зберігаю окремо/);assert.doesNotMatch(text,/PASS|APPROVED|NaN|score|балів/);}
+  for(const text of [partial,complete]){assert.match(text,/не підтвердження виконання команд або якості коду/);assert.match(text,/Фактичні результати нижче записані мною/);assert.doesNotMatch(text,/PASS|APPROVED|NaN|score|балів/);}
   assert.throws(()=>C.markdown([true]));assert.throws(()=>C.markdown(all(true),'<img src=x>'));
 });
 
@@ -125,119 +127,154 @@ test('safe rendering and copy fallback use text, not HTML injection',()=>{
   assert.match(html,/window\.confirm\(/);assert.match(html,/Браузер не дозволив автоматичне копіювання/);
 });
 
-test('page has no uploads, contact fields, external assets, network calls or dependencies',()=>{
+test('page has no uploads, external assets or network calls',()=>{
   assert.doesNotMatch(html,/<script[^>]+src=|<link[^>]+href=|<iframe|type="(?:file|email|tel)"|\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/);
-  assert.match(html,/connect-src 'none'/);
-  const links=[...html.matchAll(/href="([^"]+)"/g)].map(x=>x[1]);
-  assert.deepEqual(links,['https://github.com/genkovich/agentic-engineering-mini-kit','https://code.visualstudio.com/download','https://nodejs.org/en/download','https://code.claude.com/docs/en/quickstart','https://code.claude.com/docs/en/troubleshoot-install','https://code.claude.com/docs/en/memory']);
+  assert.ok(html.includes("connect-src 'none'"));
+  for(const [,href] of html.matchAll(/href="([^"]+)"/g))assert.match(href,/^https:\/\//);
 });
 
-test('all copy controls target an inline block, with handoff before fresh session',()=>{
+test('new semantic version never restores old exercise checkmarks',()=>{
+  assert.equal(C.VERSION,'context-check-v3-curated');
+  const storage=memory({'ai-work-check:context-check-v1':JSON.stringify({version:'context-check-v1',checked:all(true)})});
+  assert.equal(C.createProgress(()=>storage).load().count,0);
+  assert.ok(storage.values.has('ai-work-check:context-check-v1'));
+  assert.match(html,/старі позначки попередньої вправи не переносяться/);
+});
+
+test('all copy controls and evidence fields have real unique DOM targets',()=>{
+  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+  assert.equal(ids.length,new Set(ids).size);
   for(const [,target]of html.matchAll(/data-copy="([^"]+)"/g))assert.ok(html.includes('<pre id="'+target+'">'));
-  assert.ok(html.indexOf('id="prompt-8"')<html.indexOf('id="prompt-9"'));
-  for(const command of ['npm ci','npm run verify','npm run demo','git status --short','git diff','git diff --cached'])assert.ok(html.includes(command));
-  assert.match(html,/SDD й плагіни зараз не потрібні/);
+  for(const id of ['completion','evidence','evidence-agent','evidence-checks','evidence-fresh','evidence-limits','remember','progress','progress-text','storage-status','copy-status','download','reset'])assert.ok(ids.includes(id),id);
+  const exported=C.markdown(all(false),'2026-09-06T12:00:00.000Z',{agent:'Codex',checks:'tests 2',fresh:'Явно прочитано views/AGENTS.md',limits:'Автозавантаження не перевірено'});
+  for(const text of ['Codex','tests 2','Явно прочитано views/AGENTS.md','Автозавантаження не перевірено'])assert.ok(exported.includes(text));
+  assert.throws(()=>C.markdown(all(false),undefined,{agent:'x'.repeat(3001)}));
+  assert.throws(()=>C.markdown(all(false),undefined,{other:'x'}));
+  assert.throws(()=>C.markdown(all(false),undefined,{fresh:42}));
+  assert.ok(html.includes("if(result.reset)evidenceFields.forEach"));
+  assert.ok(html.includes("field.value=''"));
 });
 
-test('manual review does not mark the fresh-agent step complete',()=>{
-  assert.match(html,/Крок 9 залиш незавершеним/);
-  assert.match(C.markdown(all(false)),/Крок 9 залишається незавершеним/);
-  assert.doesNotMatch(html,/Якщо використано альтернативний спосіб/);
+test('clone and ZIP both reach a real own Git root before SDD',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/setup.md']){
+    const source=read(path);
+    for(const command of ['git clone https://github.com/genkovich/agentic-engineering-mini-kit.git','git init','git rev-parse --show-toplevel','git config user.name','git config user.email','git commit -m "Start mini-course practice"','git rev-parse HEAD'])assert.ok(source.includes(command),path+': '+command);
+    assert.ok(source.indexOf('git clone ')<source.indexOf('Code → Download ZIP'));
+    assert.ok(source.includes('батьківськ')||source.includes('батьківським'));
+  }
 });
 
-test('required rules, template, maps and instructional examples exist in the same kit',()=>{
-  for(const path of ['CLAUDE.md','views/CLAUDE.md','.claude/rules/session-index.md','templates/02-context-pack.md','CONTEXT.md','docs/architecture-map.md','docs/roadmap.md','docs/lesson-2/README.md','docs/lesson-2/context-pack.example.md','docs/lesson-2/handoff.example.md','docs/lesson-2/decision-map.md','docs/lesson-2/prompts.md'])assert.ok(fs.existsSync(new URL(path,root)),path);
+test('setup and page include version checks and exact OS installers',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/setup.md']){
+    const source=read(path);
+    for(const command of ['node --version','npm --version','git --version','claude --version','curl -fsSL https://claude.ai/install.sh | bash','irm https://claude.ai/install.ps1 | iex','/login'])assert.ok(source.includes(command),path+': '+command);
+    assert.ok(source.includes('Windows, саме PowerShell'));
+  }
 });
 
-test('local rule pattern and HTML helpers match the current files',()=>{
-  assert.match(read('.claude/rules/session-index.md'),/^---\npaths: \["lib\/claude\/\*\*\/\*\.js"\]\n---/);
-  const rule=read('views/CLAUDE.md');for(const name of ['layout()','esc()','Content-Security-Policy'])assert.ok(rule.includes(name));
-  const layout=read('views/layout.js');for(const name of ['esc','layout','empty'])assert.ok(layout.includes('export function '+name+'('));
-  assert.match(html,/lib\/claude\/\*\*\/\*\.js/);assert.match(html,/автоматичне завантаження саме цим запуском не перевірено/);
+test('one survey workflow has explicit cross-host commands and installers',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/setup.md']){
+    const source=read(path);
+    for(const value of ['/plugin marketplace add genkovich/sdd','/plugin install sdd@sdd','/reload-plugins','/sdd:survey','$sdd-survey','bash -s -- codex','bash -s -- cursor','Git Bash або WSL'])assert.ok(source.includes(value),path+': '+value);
+    assert.doesNotMatch(source,/\/sdd:interview|\/init/);
+  }
+  for(const path of ['context-check.html','docs/lesson-2/prompts.md','docs/lesson-2/README.md','README.md'])assert.ok(read(path).includes('docs/architecture-map.md'),path);
 });
 
-test('current-code excerpts and skeleton-only route claims match actual implementation',()=>{
-  const server=read('server.js'),adapter=read('lib/claude/index.js'),sources=read('lib/sources.js');
-  assert.ok(server.includes("import { claudeHome } from './lib/claude/index.js';"));
-  assert.ok(server.includes("import { listSources } from './lib/sources.js';"));
-  assert.ok(adapter.includes("return join(claudeHome(), 'projects');"));
-  assert.ok(sources.includes("for (const field of ['id', 'label', 'home']) {"));
-  assert.ok(sources.includes('never imports an adapter directly'));
-  assert.ok(server.includes('No slice is wired up yet.'));
+test('curated canonical files exist and Claude wrappers import them without duplication',()=>{
+  for(const path of ['AGENTS.md','CLAUDE.md','views/AGENTS.md','views/CLAUDE.md','docs/rules/session-data.md','.claude/rules/session-index.md','.cursor/rules/session-data.mdc','CONTEXT.md','.claude/sdd.local.example.md'])assert.ok(fs.existsSync(new URL(path,root)),path);
+  for(const path of ['docs/architecture-map.md','docs/idea-brief.md','docs/roadmap.md','templates/02-context-pack.md','docs/lesson-2/context-pack.example.md','docs/lesson-2/handoff.example.md','docs/lesson-2/decision-map.md'])assert.equal(fs.existsSync(new URL(path,root)),false,path);
+  for(const path of ['CLAUDE.md','views/CLAUDE.md']){
+    const source=read(path);assert.match(source,/^@AGENTS\.md$/m);
+    assert.ok(source.split('\n').length<=6);
+  }
+  const base=read('AGENTS.md');assert.ok(base.includes('views/AGENTS.md'));assert.ok(base.includes('docs/rules/session-data.md'));
+  const nested=read('views/AGENTS.md');for(const rule of ['layout()','esc()','Content-Security-Policy'])assert.ok(nested.includes(rule));
+});
+
+test('new session has real host actions and honestly records explicit reading',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/prompts.md','docs/lesson-2/setup.md']){
+    const source=read(path);
+    for(const phrase of ['/exit','/new','resume або continue','новий чат'])assert.ok(source.includes(phrase),path+': '+phrase);
+    assert.ok(source.includes('явно'));
+  }
+  assert.ok(html.includes('залиш крок 9 незавершеним'));
+  assert.ok(C.markdown(all(false)).includes('Крок 9 лишається незавершеним'));
+  const prompt=read('docs/lesson-2/prompts.md');
+  assert.ok(prompt.includes('Не вигадуй результатів команд і не використовуй попередню розмову.'));
+  assert.ok(prompt.includes('Необовʼязково: адаптація до свого проєкту'));
+});
+
+test('survey preserves curated instructions and does not implement the feature',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/prompts.md']){
+    const source=read(path);
+    for(const phrase of ['Карта має описувати поточний код','без реалізації нової фічі','Не змінюй код, тести й залежності','Наявні інструкції не переписуй','спочатку запропонуй правку'])assert.ok(source.includes(phrase),path+': '+phrase);
+  }
+});
+
+test('optional prompting examples come from visible current files',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/prompts.md']){
+    const source=read(path);
+    for(const term of ['Zero-shot','One-shot','Few-shot','Chain-of-thought','Список сесій | бажана зміна | README.md','GET / показує порожню сторінку | є зараз | server.js'])assert.ok(source.includes(term),path+': '+term);
+  }
+});
+
+test('Git review includes committed, uncommitted and untracked changes',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/setup.md']){
+    const source=read(path);
+    for(const command of ['git log --oneline BASE_COMMIT..HEAD','git diff BASE_COMMIT HEAD','git diff HEAD','git status --short','git diff --cached'])assert.ok(source.includes(command),path+': '+command);
+    assert.ok(source.includes('повним хешем'));
+    assert.ok(source.includes('невідстежувані'));
+  }
+  assert.doesNotMatch(html,/лише два (?:додані|ADDED)/);
+});
+
+test('manual context and handoff are absent; evidence is ephemeral and exported safely',()=>{
+  for(const path of ['context-check.html','docs/lesson-2/setup.md','docs/lesson-2/prompts.md','docs/lesson-2/README.md','README.md','AGENTS.md','CLAUDE.md'])assert.doesNotMatch(read(path),/02-context\.md|docs\/practice\/handoff\.md|templates\/02-context-pack\.md|\/sdd:interview/);
+  const exported=C.markdown(all(true));assert.match(exported,/docs\/architecture-map\.md/);
+  assert.doesNotMatch(exported,/idea-brief\.md|02-context\.md|handoff\.md/);
+  assert.equal([...html.matchAll(/data-evidence=/g)].length,4);
+  assert.ok(html.includes('Поля не зберігаються автоматично'));
+  const storage=memory(),state=C.createProgress(()=>storage);state.setRemember(true);
+  assert.deepEqual(Object.keys(JSON.parse(storage.values.get(C.KEY))).sort(),['checked','version']);
+  assert.ok(html.includes('Object.fromEntries(evidenceFields.map'));
+});
+
+test('one canonical data policy feeds Claude and Cursor selectors plus portable fallback',()=>{
+  assert.equal(JSON.parse(read('package.json')).scripts.demo,'node scripts/demo.mjs');
+  const policy=read('docs/rules/session-data.md');
+  for(const text of ['scripts/demo.mjs','fixtures/claude-home/','~/.claude','метаданих','Вміст JSONL','subagents/','tool-results/','не записує'])assert.ok(policy.includes(text),text);
+  const claude=read('.claude/rules/session-index.md'),cursor=read('.cursor/rules/session-data.mdc');
+  assert.ok(claude.includes('paths: ["lib/claude/**/*.js"]'));
+  assert.ok(claude.includes('@../../docs/rules/session-data.md'));
+  assert.ok(cursor.includes('globs: "lib/claude/**/*.js"'));assert.ok(cursor.includes('alwaysApply: false'));assert.ok(cursor.includes('@docs/rules/session-data.md'));
+  assert.ok(claude.length<300);assert.ok(cursor.length<450);
+  const imported=new URL('../../docs/rules/session-data.md',new URL('.claude/rules/session-index.md',root));
+  assert.equal(fs.readFileSync(imported,'utf8'),policy);
+  assert.ok(read('AGENTS.md').includes('прочитай \`docs/rules/session-data.md\`'));
+});
+
+test('current app keeps two skeleton routes and tests without implementation',()=>{
+  const server=read('server.js'),adapter=read('lib/claude/index.js'),pkg=JSON.parse(read('package.json'));
   assert.equal([...server.matchAll(/app\.get\(/g)].length,2);
+  assert.ok(server.includes('No slice is wired up yet.'));
   assert.doesNotMatch(adapter,/export (?:async )?function listSessions/);
+  assert.equal(pkg.scripts.verify,'node --test --test-reporter=spec "test/*.test.js"');
+  assert.deepEqual(fs.readdirSync(new URL('test/',root)).filter(x=>x.endsWith('.test.js')),['skeleton.test.js']);
+  assert.equal([...read('test/skeleton.test.js').matchAll(/^test\(/gm)].length,2);
 });
 
-test('fixture example has six direct session files and nested artifacts are excluded',()=>{
+test('fixture counts are still six direct files in three projects',()=>{
   const projects=new URL('fixtures/claude-home/projects/',root);
   const dirs=fs.readdirSync(projects,{withFileTypes:true}).filter(x=>x.isDirectory());
   const files=dirs.flatMap(dir=>fs.readdirSync(new URL(dir.name+'/',projects),{withFileTypes:true}).filter(x=>x.isFile()&&x.name.endsWith('.jsonl')));
   assert.equal(dirs.length,3);assert.equal(files.length,6);
-  assert.match(html,/шість файлів сесій у трьох проєктах/);
-  assert.match(html,/Вкладені <code>subagents\/<\/code> та <code>tool-results\/<\/code> сесіями не вважаємо/);
 });
 
-test('D1-D3 present choices are not all treated as newly unresolved decisions',()=>{
-  const roadmap=read('docs/roadmap.md');for(const id of ['D1','D2','D3'])assert.ok(roadmap.includes('| '+id+' |'));
-  assert.match(roadmap,/Зараз: один рівень/);assert.match(roadmap,/Зараз: похідний шлях із позначкою/);assert.match(roadmap,/Зараз: параметр з розумним дефолтом, без пагінації/);
-  assert.match(html,/Конкретне число в цьому записі ще не визначено/);
-  assert.match(html,/не оголошуй усі D1–D3 наново невирішеними/);
-});
-
-test('new checks do not join the two-test baseline or change its scripts',()=>{
-  const pkg=JSON.parse(read('package.json'));
-  assert.equal(pkg.scripts.verify,'node --test --test-reporter=spec "test/*.test.js"');
-  assert.equal([...read('test/skeleton.test.js').matchAll(/^test\(/gm)].length,2);
-  assert.deepEqual(fs.readdirSync(new URL('test/',root)).filter(x=>x.endsWith('.test.js')),['skeleton.test.js']);
-});
-
-test('follow-along starts with ZIP and names the folder, editor and terminal',()=>{
-  assert.ok(html.indexOf('Code → Download ZIP') < html.indexOf('git clone '));
-  for(const detail of ['Extract All / Видобути все','File → Open Folder','Terminal → New Terminal','node --version','npm --version','v22.','v24.','ENOENT','package.json'])assert.ok(html.includes(detail),detail);
-  assert.match(html,/Початковий ZIP залиш для порівняння/);
-  assert.match(html,/прийняте запрошення/);
-});
-
-test('setup and page carry concrete OS installers, version check and first prompt',()=>{
+test('ZIP comparison remains optional, read-only and correctly documents status codes',()=>{
   const setup=read('docs/lesson-2/setup.md');
-  for(const value of ['curl -fsSL https://claude.ai/install.sh | bash','irm https://claude.ai/install.ps1 | iex','claude --version','/login','Нічого не змінюй і не запускай команди. Особисті логи не відкривай.']){
-    assert.ok(html.includes(value),value);assert.ok(setup.includes(value),value);
-  }
-  assert.match(html,/Windows, саме PowerShell/);
-  assert.match(html,/Під час першого запуску пройди вхід/);
-  assert.match(html,/Встановлена програма ще потребує акаунта/);
-  assert.match(html,/сама по собі не забирає технічного права запису/);
-});
-
-test('commands have waiting guidance and example output is not learner evidence',()=>{
-  assert.match(html,/<pre id="command-2"><code>npm ci<\/code>/);
-  assert.match(html,/<pre id="command-verify"><code>npm run verify<\/code>/);
-  assert.match(html,/Дочекайся завершення: термінал знову запропонує/);
-  assert.match(html,/приклад очікування, не результат твого запуску/);
-  assert.ok(html.includes('tests 2\npass 2\nfail 0'));
-  assert.match(html,/Він зайнятий сервером/);
-});
-
-test('same fresh-session route follows saved handoff in all L2 instructions',()=>{
-  for(const path of ['context-check.html','docs/lesson-2/setup.md','docs/lesson-2/prompts.md','templates/02-context-pack.md']){
-    const source=read(path);assert.ok(source.includes('/exit'),path);assert.ok(source.includes('resume чи continue')||source.includes('resume або continue'),path);assert.ok(source.includes('claude'),path);assert.ok(!source.includes('/clear'),path);
-  }
-  assert.match(html,/File → Save As/);
-  assert.match(html,/File → New File/);
-  const rootRules=read('CLAUDE.md');assert.match(rootRules,/docs\/practice\/02-context\.md/);assert.doesNotMatch(rootRules,/Урок 2 його розширює/);
-});
-
-test('demo explanations match the explicit fixture-only launcher',()=>{
-  const pkg=JSON.parse(read('package.json'));assert.equal(pkg.scripts.demo,'node scripts/demo.mjs');
-  for(const path of ['context-check.html','docs/lesson-2/setup.md','templates/02-context-pack.md'])assert.ok(read(path).includes('scripts/demo.mjs'),path);
-  assert.ok(read('scripts/demo.mjs').includes("PORT: '4180'"));
-});
-
-test('ZIP comparison command and its exit codes agree across instructions',()=>{
-  const command='node scripts/compare-kit.mjs "<path to unpacked untouched kit>"';
-  for(const path of ['docs/lesson-2/setup.md','docs/lesson-2/prompts.md','README.md','templates/02-context-pack.md'])assert.ok(read(path).includes(command),path);
-  assert.ok(html.includes('node scripts/compare-kit.mjs "&lt;path to unpacked untouched kit&gt;"'));
-  for(const word of ['ADDED','CHANGED','REMOVED','Thumbs.db','.DS_Store'])assert.ok(html.includes(word),word);
-  assert.match(html,/Код завершення 1 означає знайдені відмінності/);
+  assert.ok(setup.includes('Необовʼязкова діагностика ZIP'));
+  assert.ok(setup.includes('node scripts/compare-kit.mjs "<path to unpacked untouched kit>"'));
+  assert.ok(setup.includes('0 без відмінностей, 1 з відмінностями, 2 помилка'));
   assert.ok(fs.existsSync(new URL('scripts/compare-kit.mjs',root)));
 });

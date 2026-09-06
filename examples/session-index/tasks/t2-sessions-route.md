@@ -45,7 +45,7 @@ status: "done"
 
 > Новий JSON-маршрут → `app.get('/api/...')` за зразком `/api/health` (`server.js:13-15`).
 >
-> — `docs/architecture-map.md §Where things live, abridged` · full text: [architecture-map.md](../../architecture-map.md)
+> — `docs/architecture-map.md §Where things live, abridged` · історичне джерело того прогону; у поточній практиці карту створює survey.
 
 > **Hard rule:** тести без shell-команд (`find`, `grep`, `wc`, `jq`, `child_process`): такий тест ламає `npm run verify` на Windows. Підрахунки з диска робить `test/oracle.js`.
 >

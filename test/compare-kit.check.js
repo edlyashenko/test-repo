@@ -25,12 +25,12 @@ function run(current, baseline) { return spawnSync(process.execPath, [cli, basel
 
 test('two added practice documents are listed in deterministic order, including spaces in roots', t => {
   const { current, baseline } = fixture(t);
-  put(current, 'docs/practice/handoff.md'); put(current, 'docs/practice/02-context.md');
-  const expected = [{ status: 'ADDED', path: 'docs/practice/02-context.md' }, { status: 'ADDED', path: 'docs/practice/handoff.md' }];
+  put(current, 'docs/idea-brief.md'); put(current, 'docs/architecture-map.md');
+  const expected = [{ status: 'ADDED', path: 'docs/architecture-map.md' }, { status: 'ADDED', path: 'docs/idea-brief.md' }];
   assert.deepEqual(compareKit(current, baseline), expected);
   const result = run(current, baseline);
   assert.equal(result.status, 1, result.stderr);
-  assert.equal(result.stdout, 'ADDED\tdocs/practice/02-context.md\nADDED\tdocs/practice/handoff.md\nSUMMARY added=2 changed=0 removed=0\n');
+  assert.equal(result.stdout, 'ADDED\tdocs/architecture-map.md\nADDED\tdocs/idea-brief.md\nSUMMARY added=2 changed=0 removed=0\n');
 });
 
 test('reports runtime byte changes and removed files; ignores mtime differences', t => {
