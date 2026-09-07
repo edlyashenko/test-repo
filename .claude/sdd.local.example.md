@@ -4,13 +4,13 @@ artifact_language: uk       # мова прози в документах; за�
 tdd: true                   # RED перед кодом
 team_mode: false            # true → команда агентів через TeamCreate; для першого проходу off
 workflow_mode: off          # auto → динамічний Workflow, коли граф має паралельні задачі; off → послідовно
-max_parallel_agents: 1      # 1 = послідовно; лектор працював з 3 і worktree, це другий прогін
+max_parallel_agents: 1      # перший прохід послідовний; паралель потребує окремого обґрунтування
 isolation: worktree         # worktree | inplace; при max_parallel_agents 1 значення не має
-stop_on_red: true           # червоний, що пережив три спроби, зупиняє прогін
-max_red_retries: 3
+stop_on_red: true           # зупинка після вичерпання ескалації; не глобальний ліміт у три спроби
+max_red_retries: 3          # повтори GREEN до наступних кроків ескалації SDD
 gate_lint: false            # у цьому репо лінтера нема; увімкнений gate без команди це знахідка #17 у ревʼю лектора
 gate_vet: false
-require_integration: never  # Docker у цьому репо не потрібен
+require_integration: never  # окремий Docker-tier вимкнено; файлові й HTTP-перевірки входять у verify
 auto_commit: per_task       # коміт на задачу з трейлерами SDD-Task / SDD-AC; потребує git-репо
 branch_strategy: feature    # створює гілку фічі, якщо ти на main
 cmd_test_unit: "npm run verify"
@@ -28,7 +28,7 @@ effort_reviewer: high
 
 # Налаштування SDD для цього пакета
 
-Скопіюй у `.claude/sdd.local.md` (той файл у git не потрапляє, цей приклад лишається):
+Лише якщо `.claude/sdd.local.md` ще немає, цей приклад можна скопіювати під час підготовки. Наявний файл не перезаписуй; погоджені зміни значень роби через `/sdd:config`. Сам файл налаштувань у git не потрапляє, цей приклад лишається:
 
 ```sh
 cp .claude/sdd.local.example.md .claude/sdd.local.md
