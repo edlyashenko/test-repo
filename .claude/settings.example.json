@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/verify-hook.mjs",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
