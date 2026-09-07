@@ -56,7 +56,7 @@ BMAD Method пропонує 29 скілів і п'ять персон: анал
 
 ## Ще кілька, які трапляються
 
-cc-sdd (`npx cc-sdd@latest`, v3.0.2) переносить формат Kiro у Claude Code і Codex: `/kiro-spec-init` → `/kiro-spec-requirements` → `/kiro-spec-design` → `/kiro-spec-tasks` → `/kiro-impl`, артефакти в `.kiro/specs/<name>/`. GSD (`open-gsd/gsd-core`) називає себе «meta-prompting and spec-driven development system» з `.planning/`. Обидва проходять ті самі фази, мапінг зробиш за таблицею вище.
+Kiro (IDE від AWS) має власний формат spec-driven роботи: Feature Spec, Quick Spec і Bugfix Spec, артефакти `requirements.md` (або `bugfix.md`), `design.md`, `tasks.md` у `.kiro/specs/<name>/`; Bugfix Spec тримає форму Current / Expected / Unchanged Behavior, яку ми беремо за зразок для наявного коду ([kiro.dev/docs/specs](https://kiro.dev/docs/specs/)). cc-sdd (`npx cc-sdd@latest`, v3.0.2) переносить цей формат у Claude Code і Codex: `/kiro-spec-init` → `/kiro-spec-requirements` → `/kiro-spec-design` → `/kiro-spec-tasks` → `/kiro-impl`, артефакти в `.kiro/specs/<name>/`. GSD (`open-gsd/gsd-core`) називає себе «meta-prompting and spec-driven development system» з `.planning/`. Обидва проходять ті самі фази, мапінг зробиш за таблицею вище.
 
 Ще три інструменти закривають окремі дірки в контексті, про які йдеться в другому уроці, і не є повним маршрутом:
 
