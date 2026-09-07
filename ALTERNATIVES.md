@@ -56,7 +56,13 @@ BMAD Method пропонує 29 скілів і п'ять персон: анал
 
 ## Ще кілька, які трапляються
 
-cc-sdd (`npx cc-sdd@latest`, v3.0.2) переносить формат Kiro у Claude Code і Codex: `/kiro-spec-init` → `/kiro-spec-requirements` → `/kiro-spec-design` → `/kiro-spec-tasks` → `/kiro-impl`, артефакти в `.kiro/specs/<name>/`. Superpowers (obra) це методологічні скіли brainstorming → writing-plans → TDD → code review з файлами в `docs/superpowers/`. GSD (`open-gsd/gsd-core`) називає себе «meta-prompting and spec-driven development system» з `.planning/`. Усі три проходять ті самі фази, мапінг зробиш за таблицею вище.
+cc-sdd (`npx cc-sdd@latest`, v3.0.2) переносить формат Kiro у Claude Code і Codex: `/kiro-spec-init` → `/kiro-spec-requirements` → `/kiro-spec-design` → `/kiro-spec-tasks` → `/kiro-impl`, артефакти в `.kiro/specs/<name>/`. GSD (`open-gsd/gsd-core`) називає себе «meta-prompting and spec-driven development system» з `.planning/`. Обидва проходять ті самі фази, мапінг зробиш за таблицею вище.
+
+Ще три інструменти закривають окремі дірки в контексті, про які йдеться в другому уроці, і не є повним маршрутом:
+
+- [Superpowers (obra)](https://github.com/obra/superpowers): методологічні скіли brainstorming → writing-plans → TDD → code review; дизайн лягає в `docs/superpowers/specs/`, план у `docs/superpowers/plans/`.
+- [Context7 (upstash)](https://github.com/upstash/context7): MCP-сервер, який підтягує актуальну документацію бібліотек у контекст агента замість застарілих знань моделі.
+- [Graphify (Graphify-Labs)](https://github.com/Graphify-Labs/graphify): граф репозиторію на tree-sitter без моделі; вихід `graph.html`, `GRAPH_REPORT.md`, `graph.json`. Карта чужого коду для людини й агента, поруч зі `survey`.
 
 ## Дві короткі альтернативи інтервʼю
 
