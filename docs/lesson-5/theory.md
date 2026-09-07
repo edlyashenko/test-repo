@@ -9,7 +9,7 @@
 
 ### 1. «Готово», сказав той, хто робив
 
-Список сесій готовий. Девʼятнадцять тестів зелені, агент пише «готово». Лектор зробив те, що радив в уроці 4: відкрив свіжу сесію без історії виконавця і дав їй spec і diff. Вона повернула одинадцять знахідок, пʼять із них по критеріях приймання. Одна зовсім проста: параметр `limit` зі значенням `3abc` віддає три рядки, бо реалізація бере числовий префікс через `parseInt`, а тест перевіряв лише `abc`. Тест зелений, критерій порушений. Повний журнал: [`examples/session-index/_review/review-2026-09-06.md`](../../examples/session-index/_review/review-2026-09-06.md).
+Список сесій готовий. Девʼятнадцять тестів зелені, агент пише «готово». Лектор зробив те, що радив в уроці 4: відкрив свіжу сесію без історії виконавця і дав їй spec і diff. Вона повернула одинадцять знахідок, пʼять із них по критеріях приймання. Одна зовсім проста: параметр `limit` зі значенням `3abc` віддає три рядки, бо реалізація бере числовий префікс через `parseInt`, а тест перевіряв лише `abc`. Тест зелений, критерій порушений. Повний журнал: [`examples/session-index/_review/review-2026-09-06.md`](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/examples/session-index/_review/review-2026-09-06.md).
 
 Тут злипаються в одне слово три різні речі. Заява виконавця: «готово». Вивід команди: девʼятнадцять зелених на конкретній версії. Приймання: ми звірили вимоги з доказами і вирішили щодо цього хеша. Між ними робота, і в цьому уроці вона наша.
 
@@ -73,7 +73,7 @@ RED і GREEN корисні лише з причиною. Правильний R
 | Регресія | Чи збережено перевірку здоровʼя і оболонку сторінки? |
 | Межа доступу | Чи не потрапили вкладені файли, symlink або вміст JSONL поза погодженим обсягом? |
 
-Лінт і типи це дешевий сигнал до запуску. Лінтер після кожної правки в агентному циклі підняв частку розвʼязаних задач з 15 до 18 відсотків на тій самій моделі ([SWE-agent](https://arxiv.org/abs/2405.15793)); статичні типи ловлять близько 15 відсотків публічних багів у JavaScript ([To Type or Not to Type](http://earlbarr.com/publications/typestudy.pdf)). Але домовленостей продукту вони не знають. І в нашому кіті `npm run verify` запускає лише тести ([package.json](../../package.json)): окремих lint і typecheck там немає, не записуй їх виконаними.
+Лінт і типи це дешевий сигнал до запуску. Лінтер після кожної правки в агентному циклі підняв частку розвʼязаних задач з 15 до 18 відсотків на тій самій моделі ([SWE-agent](https://arxiv.org/abs/2405.15793)); статичні типи ловлять близько 15 відсотків публічних багів у JavaScript ([To Type or Not to Type](http://earlbarr.com/publications/typestudy.pdf)). Але домовленостей продукту вони не знають. І в нашому кіті `npm run verify` запускає лише тести ([package.json](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/package.json)): окремих lint і typecheck там немає, не записуй їх виконаними.
 
 ### 7. Перевір сам тест: мутації і властивості
 
@@ -126,7 +126,7 @@ Fix починається з тріажу: це регресія, помилк�
 
 Правило в інструкціях (`AGENTS.md`, `.claude/rules/`) це прохання. Hook з названою подією це примус: він біжить сам і без волі моделі. У [hooks Claude Code](https://code.claude.com/docs/en/hooks) лише exit code 2 блокує, і його stderr іде моделі як вхід; код 1 система вважає звичайною помилкою і йде далі. `PreToolUse` блокує виклик інструмента до дії, `Stop` не дає агенту зупинитись, `PostToolUse` отримує вже виконану дію. Плагін security-guidance побудований на тих самих hooks ([як плагін інтегрується](https://code.claude.com/docs/en/security-guidance#how-the-plugin-integrates-with-claude-code)). І без контрольного провалу блокування не доведене: зламай assert, побач 2, поверни файл, побач 0.
 
-CI біжить на push ([verify.yml кіта](../../.github/workflows/verify.yml)), але сам файл CI злиття не забороняє. Для цього потрібні правила гілки в репо.
+CI біжить на push ([verify.yml кіта](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/.github/workflows/verify.yml)), але сам файл CI злиття не забороняє. Для цього потрібні правила гілки в репо.
 
 ### 13. Скіли за кроками циклу: наш маршрут і сусіди
 
@@ -140,11 +140,11 @@ CI біжить на push ([verify.yml кіта](../../.github/workflows/verify.
 | Фікс і спрощення | `fix`: тріаж, pinning test, `_fixes/` | `diagnosing-bugs` (mattpocock/skills); `/simplify` |
 | Гейт у пайплайні | Stop-hook з `npm run verify` | hooks; плагін `security-guidance`; CI branch protection |
 
-Кроків вголос пʼять: доказ замість заяви, незалежне ревʼю, розбір зауважень, фікс і спрощення, гейт у пайплайні. Обери один маршрут і тримай звіти в одному місці, тоді повторне ревʼю знаходить попереднє без переказу. Один скіл на найчастішу дірку, решта коли знадобиться. Порівняння з командами: [ALTERNATIVES.md](../../ALTERNATIVES.md), репо [genkovich/sdd](https://github.com/genkovich/sdd), [obra/superpowers](https://github.com/obra/superpowers), [github/spec-kit](https://github.com/github/spec-kit), [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec), [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD).
+Кроків вголос пʼять: доказ замість заяви, незалежне ревʼю, розбір зауважень, фікс і спрощення, гейт у пайплайні. Обери один маршрут і тримай звіти в одному місці, тоді повторне ревʼю знаходить попереднє без переказу. Один скіл на найчастішу дірку, решта коли знадобиться. Порівняння з командами: [ALTERNATIVES.md](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/ALTERNATIVES.md), репо [genkovich/sdd](https://github.com/genkovich/sdd), [obra/superpowers](https://github.com/obra/superpowers), [github/spec-kit](https://github.com/github/spec-kit), [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec), [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD).
 
 ### 14. Канва перевірки: де кожен доказ
 
-Усе з циклу має адресу. Канва з пʼяти частин лежить у `docs/practice/05-verification.md`, звіт ревʼю у `docs/features/session-index/_review/`, запис фіксу у `_fixes/`, правило в `AGENTS.md`, hook у `.claude/settings.json`. Шаблон: [`templates/05-verification-canvas.md`](../../templates/05-verification-canvas.md).
+Усе з циклу має адресу. Канва з пʼяти частин лежить у `docs/practice/05-verification.md`, звіт ревʼю у `docs/features/session-index/_review/`, запис фіксу у `_fixes/`, правило в `AGENTS.md`, hook у `.claude/settings.json`. Шаблон: [`templates/05-verification-canvas.md`](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/templates/05-verification-canvas.md).
 
 Читай канву як пʼять питань:
 
