@@ -18,7 +18,7 @@ updated_at: "2026-09-08"
 
 | # | Step | Source | Size | Status |
 |---|---|---|:---:|---|
-| 1 | Індекс сесій: перелік сесій усіх проєктів із проєктом, розміром і часом зміни, від свіжих | `README.md` §«Яку зміну починаємо» | S | idea |
+| 1 | `session-index`: перелік сесій усіх проєктів із проєктом, розміром і часом зміни, від свіжих | `README.md` §«Яку зміну починаємо» | S | idea |
 | 2 | Перегляд однієї сесії → див. [Not yet specified](#not-yet-specified) | `docs/roadmap.md` §Destination | fog | idea |
 | 3 | Вартість сесії в токенах → див. [Not yet specified](#not-yet-specified) | `docs/roadmap.md` §Destination | fog | idea |
 | 4 | Друге джерело за контрактом registerSource → див. [Not yet specified](#not-yet-specified) | `docs/roadmap.md` §Destination | fog | idea |
