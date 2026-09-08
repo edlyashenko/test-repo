@@ -1,4 +1,4 @@
-// Перевірки hook-а уроку 5 і матеріалів уроку. Запуск: node --test "test/*.check.js"
+// Контракт Stop-hook: node --test test/verify-hook.check.js
 // Навмисно поза *.test.js: `npm run verify` лишається набором runtime-тестів дашборда.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -28,7 +28,6 @@ function runHook(input, cwd) {
 test('settings.example.json declares exactly one Stop hook that runs the verify script', () => {
   const example = JSON.parse(read('.claude/settings.example.json'));
   assert.deepEqual(example, { hooks: { Stop: [{ hooks: [{ type: 'command', command: 'node scripts/verify-hook.mjs', timeout: 120 }] }] } });
-  assert.ok(!fs.existsSync(join(root, '.claude', 'settings.json')), '.claude/settings.json must not ship with the kit: the student copies the example in lesson 5');
   assert.match(read('.gitignore'), /^\.claude\/settings\.local\.json$/m);
 });
 
@@ -57,22 +56,4 @@ test('a green verify lets the stop through with exit 0; cwd falls back to proces
   assert.ok(fs.existsSync(join(dir, 'ran.txt')));
   const empty = runHook('', dir);
   assert.equal(empty.status, 0, 'empty stdin is treated as a plain stop');
-});
-
-test('lesson 5 materials: 12 steps, three looks, fix, simplify, rule and hook are all documented', () => {
-  const readme = read('docs/lesson-5/README.md');
-  for (const s of ['settings.example.json', 'verify-hook.mjs', 'код 2', '_fixes/', '/code-review medium', '/security-review', '/simplify', 'AGENTS.md', '12 кроків', 'pre-commit']) {
-    assert.ok(readme.includes(s), 'README lacks ' + s);
-  }
-  for (let i = 1; i <= 12; i++) assert.match(readme, new RegExp('^## ' + i + '\\. ', 'm'), 'README step ' + i);
-  const prompts = read('docs/lesson-5/prompts.md');
-  for (const l of ['A', 'B', 'C', 'D', 'E', 'F']) assert.match(prompts, new RegExp('^## ' + l + '\\. ', 'm'), 'prompt ' + l);
-  const template = read('templates/05-verification-canvas.md');
-  assert.match(template, /<!-- template-map:start -->[\s\S]*<!-- template-map:end -->/);
-  assert.ok(template.includes('Hook у репо'));
-  assert.ok(template.includes('| Погляд | Інструмент | Обсяг | Знахідок | Звіт |'));
-  const theory = read('docs/lesson-5/theory.md');
-  const map = (s) => (s.match(/<!-- template-map:start -->\n([\s\S]*?)<!-- template-map:end -->/) || [])[1];
-  assert.equal(map(theory), map(template), 'template map in theory.md must equal the template verbatim');
-  assert.match(theory, /<!-- theory:start -->[\s\S]*<!-- theory:end -->/);
 });

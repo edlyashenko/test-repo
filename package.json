@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local-first dashboard over Claude Code session logs. Practice repo for the Agentic Engineering mini-course: the skeleton the course starts from.",
+  "description": "Local-first dashboard over coding-agent session logs.",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "node server.js",

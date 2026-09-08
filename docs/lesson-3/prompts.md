@@ -14,8 +14,9 @@
 
 ```text
 Готуємо вимоги session-index у цьому пакеті. Виконай лише specify.
-Прочитай README.md, AGENTS.md, CONTEXT.md, мою docs/architecture-map.md,
-docs/rules/session-data.md, views/AGENTS.md і поточні server.js,
+Прочитай README.md, AGENTS.md, CONTEXT.md, docs/roadmap.md,
+мою docs/architecture-map.md, docs/rules/session-data.md,
+views/AGENTS.md і поточні server.js,
 lib/claude/index.js, lib/sources.js, views/layout.js, test/skeleton.test.js.
 Якщо карти після survey немає, зупинись і назви відсутній файл.
 

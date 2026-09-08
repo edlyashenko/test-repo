@@ -1,6 +1,5 @@
-// Ground truth straight off disk, in plain Node. The original acceptance tests shelled out to
-// find / grep / wc / jq; that made `npm run verify` fail on Windows and on any machine without jq.
-// Same oracles, same semantics, no external tools.
+// Ground truth straight off disk, in plain Node. Shelling out to find / grep / wc / jq would break
+// `npm run verify` on Windows and on any machine without jq, so the oracles stay dependency-free.
 import { readdirSync, readFileSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 

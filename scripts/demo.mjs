@@ -1,4 +1,4 @@
-// The learning demo always uses synthetic fixtures, regardless of inherited shell settings.
+// Runs the app on the bundled fixtures, regardless of inherited shell settings.
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

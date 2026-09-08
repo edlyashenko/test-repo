@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // git does not store file mtimes: after a clone every fixture session carries the same mtime (the
 // checkout moment). Anything that sorts or buckets sessions by mtime then sees six identical dates.
-// This pins each session file's mtime to its own last `timestamp`, exactly like make-fixtures.mjs
-// did when it wrote them. Runs before `verify` and `demo` (see package.json), safe to run any time.
+// This pins each session file's mtime to its own last `timestamp`, the way it was written.
+// Runs before `verify` and `demo` (see package.json), safe to run any time.
 import { readdirSync, readFileSync, statSync, utimesSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

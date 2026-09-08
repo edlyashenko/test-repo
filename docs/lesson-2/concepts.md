@@ -70,7 +70,7 @@ SDD це набір `SKILL.md`, і тримається він на тій са�
 - `docs/features/<назва фічі>/`: тека однієї фічі. Туди стадія за стадією лягають `spec.md`, `sad.md` (архітектурний документ), `adr/`, `tasks.json`, а також службові `.size` і `.route`. У кіті для session-index `.size` і `.route` уже лежать, тому цю теку ти побачиш ще до першої стадії.
 - `CONTEXT.md`: словник термінів проєкту, який веде скіл `glossary`; `specify`, `clarify` і `design` читають його. У кіті він уже є.
 
-Маршрут по курсу: у цьому уроці `survey`, в уроці 3 `specify`, `clarify`, `design`, `tasks` і `plan-tests`. В уроці 4 `implement`, в уроці 5 `review`, `fix` і `ship`, в уроці 6 `roadmap` і запис виправлень із `fix`. Повний конвеєр SDD ширший: `ux-flows`, `sequences`, `data-model`, `api` і `screens` описані в README SDD, у курсі ми їх не проходимо. Ті самі кроки іншими фреймворками зіставлені в [ALTERNATIVES.md](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/ALTERNATIVES.md).
+Маршрут по курсу: у цьому уроці `survey`, в уроці 3 `specify`, `clarify`, `design`, `tasks` і `plan-tests`. В уроці 4 `implement`, в уроці 5 `review`, `fix` і `ship`, в уроці 6 запис виправлень із `fix`. `docs/roadmap.md` у кіті вже готовий, у другому уроці ми його читаємо. Повний конвеєр SDD ширший: `ux-flows`, `sequences`, `data-model`, `api` і `screens` описані в README SDD, у курсі ми їх не проходимо. Ті самі кроки іншими фреймворками зіставлені в [ALTERNATIVES.md](https://github.com/genkovich/agentic-engineering-mini-kit/blob/main/ALTERNATIVES.md).
 
 ### Чужий код і команда
 
@@ -93,4 +93,4 @@ SDD це набір `SKILL.md`, і тримається він на тій са�
 
 Працюй разом із відео: став паузу після показу, повторюй дію й звіряй результат. На [сторінці практики](https://genkovich.github.io/ai-work-check/context-check.html) ті самі десять кроків, а внизу є поля для твоїх фактичних перевірок. Наприкінці завантажиш один підсумок із позначками й записами.
 
-Продовжуй за [десятьма кроками](../../context-check.html). [Підготовка інструментів](setup.md) та [готові повідомлення](prompts.md) допоможуть повторити дії у своєму середовищі.
+Продовжуй за [десятьма кроками](https://genkovich.github.io/ai-work-check/context-check.html). [Підготовка інструментів](setup.md) та [готові повідомлення](prompts.md) допоможуть повторити дії у своєму середовищі.
