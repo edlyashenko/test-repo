@@ -1,7 +1,0 @@
----
-description: Політика роботи з даними сесій
-globs: "lib/claude/**/*.js"
-alwaysApply: false
----
-
-@docs/rules/session-data.md

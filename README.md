@@ -57,10 +57,10 @@ npm run demo
 | `docs/architecture-map.md` | Survey створить опис поточного коду; на старті файла немає |
 | `AGENTS.md`, `CLAUDE.md` | Основні готові інструкції й короткий імпорт для Claude Code |
 | `CONTEXT.md` | Короткий готовий словник; переписувати його не потрібно |
-| `views/AGENTS.md`, `views/CLAUDE.md` | HTML-інструкції й імпорт для Claude Code |
+| `views/AGENTS.md`, `views/CLAUDE.md` | Карта HTML-шару й імпорт для Claude Code |
 | `docs/roadmap.md` | Кроки, туман і відкриті питання: що будуємо далі |
-| `docs/rules/session-data.md` | Єдина політика роботи з даними |
-| `.claude/rules/session-data.md`, `.cursor/rules/session-data.mdc` | Адаптери інструментів із шаблоном шляхів і посиланням на спільну політику |
+| `.claude/rules/javascript.md`, `tests.md`, `views.md` | Технічні конвенції зон; кожне правило має свій `paths:` і вантажиться саме на файлах зони |
+| `.cursor/rules/*.mdc` | Ті самі три правила для Cursor: свій формат frontmatter і посилання на канонічний текст |
 | `docs/features/session-index/` | Пресети розміру S і маршруту standard; тут з уроку 3 зʼявляться документи фічі |
 | `examples/session-index/` | Історичні артефакти лектора для людини; агент не читає їх без окремого дозволу |
 | `templates/` | Анкети та робочі матеріали наступних уроків |

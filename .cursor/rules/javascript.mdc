@@ -1,0 +1,9 @@
+---
+description: Конвенції JavaScript у цьому репо
+globs: "**/*.js,**/*.mjs"
+alwaysApply: false
+---
+
+@.claude/rules/javascript.md
+
+Якщо посилання вище не підтягнулося, відкрий `.claude/rules/javascript.md` явно: канонічний текст правила лежить там.

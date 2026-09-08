@@ -15,7 +15,7 @@
 перед реалізацією: FEATURE_BASE_COMMIT. Якщо це ще placeholder або
 хеш не існує, зупинись і попроси справжній хеш; не вигадуй його.
 
-Прочитай AGENTS.md, CONTEXT.md, docs/rules/session-data.md,
+Прочитай AGENTS.md, CONTEXT.md, правила в .claude/rules/,
 views/AGENTS.md, мою docs/architecture-map.md та документи фічі:
 spec.md з inline Test plan, sad.md, Accepted ADR, tasks.json,
 Markdown-файли задач і tracker, якщо він уже є.
@@ -122,7 +122,7 @@ never вимикає тільки окрему integration-стадію SDD з D
 поясни це до змін і погодь найменшу групу зі спільним зеленим gate.
 Не роби червоний коміт заради штучної паузи посеред такої групи.
 
-Прочитай AGENTS.md, CONTEXT.md, docs/rules/session-data.md,
+Прочитай AGENTS.md, CONTEXT.md, правила в .claude/rules/,
 views/AGENTS.md, docs/architecture-map.md, docs/practice/04-workflow.md,
 чинні налаштування й документи docs/features/session-index/.
 Завантаж tasks.json і звір tracker з реальним станом коду та Git.
@@ -236,7 +236,7 @@ ADR, інструкції, видані fixtures або залежності б�
 
 ```text
 Зроби read-only звірку стану session-index після навчального проходу.
-Прочитай AGENTS.md, docs/rules/session-data.md, карту проєкту,
+Прочитай AGENTS.md, правила в .claude/rules/, карту проєкту,
 docs/practice/04-workflow.md, spec із Test plan, SAD, Accepted ADR,
 tasks.json, файли задач і tracker. examples/ не читай.
 Не змінюй файли, не коміть, не запускай implement/review/ship або сервер.
@@ -270,7 +270,7 @@ tasks.json, файли задач і tracker. examples/ не читай.
 ```text
 Незалежно перечитай карту виконання session-index перед реалізацією.
 Це read-only перевірка способу роботи, не рев'ю готового коду.
-Прочитай AGENTS.md, docs/rules/session-data.md, мою карту проєкту,
+Прочитай AGENTS.md, правила в .claude/rules/, мою карту проєкту,
 docs/practice/04-workflow.md, spec із Test plan, SAD, Accepted ADR,
 tasks.json і потрібні файли задач. examples/ не читай.
 Не редагуй файли, не коміть, не запускай implement, review або ship.

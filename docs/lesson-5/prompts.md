@@ -10,7 +10,7 @@
 
 ```text
 Готуємо незалежне приймання моєї реалізації session-index після уроку 4.
-Прочитай AGENTS.md, docs/rules/session-data.md, views/AGENTS.md,
+Прочитай AGENTS.md, правила в .claude/rules/, views/AGENTS.md,
 docs/practice/04-workflow.md, мої spec.md, sad.md, Accepted ADR,
 tasks.json і tasks/tracker.md у docs/features/session-index/.
 Звір стан задач із кодом. Якщо фіча часткова, назви незавершене
@@ -49,7 +49,7 @@ CANDIDATE_COMMIT: <повний кандидатний хеш>.
 Якщо автоматично обрана база інша або робоче дерево відрізняється
 від кандидата, зупинись і поясни, як погодити правильний обсяг.
 
-Передай свіжому рецензенту AGENTS.md, docs/rules/session-data.md,
+Передай свіжому рецензенту AGENTS.md, правила в .claude/rules/,
 views/AGENTS.md, мою architecture-map, spec з Test plan, SAD,
 Accepted ADR, tasks.json і файли задач, tracker, повний diff,
 код, тести та docs/practice/05-verification.md з фактичними доказами.
@@ -112,7 +112,7 @@ FEATURE_BASE_COMMIT: <повний базовий хеш>. CANDIDATE_COMMIT: <п
 <номер знахідки і погляд, симптом, кроки відтворення, очікування за моїм AC>.
 Звіти: <шлях у _review/ і вивід другого або третього погляду>.
 Поточний кандидат: <повний хеш>. FEATURE_BASE_COMMIT не змінюй.
-Прочитай AGENTS.md, docs/rules/session-data.md, views/AGENTS.md,
+Прочитай AGENTS.md, правила в .claude/rules/, views/AGENTS.md,
 spec, SAD, потрібні задачі й код. Особисті дані та examples/ не читай.
 Перевір поточні зміни Git; сторонню роботу не стирай і не коміть.
 

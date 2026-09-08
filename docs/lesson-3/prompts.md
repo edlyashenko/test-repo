@@ -15,7 +15,7 @@
 ```text
 Готуємо вимоги session-index у цьому пакеті. Виконай лише specify.
 Прочитай README.md, AGENTS.md, CONTEXT.md, docs/roadmap.md,
-мою docs/architecture-map.md, docs/rules/session-data.md,
+мою docs/architecture-map.md, правила в .claude/rules/,
 views/AGENTS.md і поточні server.js,
 lib/claude/index.js, lib/sources.js, views/layout.js, test/skeleton.test.js.
 Якщо карти після survey немає, зупинись і назви відсутній файл.
@@ -77,7 +77,7 @@ lib/claude/index.js, lib/sources.js, views/layout.js, test/skeleton.test.js.
 ```text
 Виконай лише clarify для session-index до реалізації.
 Прочитай spec.md фічі, README.md, docs/architecture-map.md,
-AGENTS.md, CONTEXT.md, docs/rules/session-data.md і поточний код.
+AGENTS.md, CONTEXT.md, правила в .claude/rules/ і поточний код.
 Шукай речення, за якими можна отримати два різні результати,
 що формально відповідають опису. Для знахідки наведи цитату,
 прочитання A і B та наслідок для людини, яка користується списком.
@@ -107,7 +107,7 @@ examples/ не читай, implement не запускай. .size=S і .route=st
 ```text
 Виконай лише design для session-index за погодженим spec.
 Прочитай README.md, AGENTS.md, docs/architecture-map.md, spec.md,
-docs/rules/session-data.md, views/AGENTS.md і поточний код.
+правила в .claude/rules/, views/AGENTS.md і поточний код.
 Створи sad.md фічі за встановленим шаблоном SDD.
 Познач наявні файли й заплановані зміни окремо. server.js уже напряму
 імпортує claudeHome; коментар про реєстр у lib/sources.js не є доказом,
@@ -149,7 +149,7 @@ examples/ не читай; implement і наступні стадії не за�
 ```text
 Виконай лише tasks для session-index. Прочитай README.md, AGENTS.md,
 docs/architecture-map.md, spec.md, sad.md і всі Accepted ADR фічі,
-docs/rules/session-data.md, views/AGENTS.md та поточний код.
+правила в .claude/rules/, views/AGENTS.md та поточний код.
 Перевір hard gate: spec, SAD, щонайменше один справжній Accepted ADR.
 У SAD мають бути web-frontend і backend-service у target_surfaces.
 Якщо входів бракує або контракт непогоджений, зупинись і назви проблему.

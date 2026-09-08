@@ -1,0 +1,9 @@
+---
+description: Як писати тести в цьому репо
+globs: "test/**"
+alwaysApply: false
+---
+
+@.claude/rules/tests.md
+
+Якщо посилання вище не підтягнулося, відкрий `.claude/rules/tests.md` явно: канонічний текст правила лежить там.

@@ -45,7 +45,7 @@ npm run verify
 
 Відкрий у редакторі:
 
-- `AGENTS.md`, `CONTEXT.md`, `docs/rules/session-data.md` і карту проєкту;
+- `AGENTS.md`, `CONTEXT.md`, правила в `.claude/rules/` і карту проєкту;
 - `docs/features/session-index/spec.md`, зокрема AC та розділ `Test plan`;
 - `docs/features/session-index/sad.md` і погоджений ADR зі статусом `Accepted`;
 - `docs/features/session-index/tasks.json` і Markdown-файли, названі в полях `file`.

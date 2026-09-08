@@ -1,0 +1,9 @@
+---
+description: Як писати HTML-сторінки в цьому репо
+globs: "views/**/*.js"
+alwaysApply: false
+---
+
+@.claude/rules/views.md
+
+Якщо посилання вище не підтягнулося, відкрий `.claude/rules/views.md` явно: канонічний текст правила лежить там.
