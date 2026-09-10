@@ -28,3 +28,24 @@ target_surfaces: []
 | Tech Lead (maintainer) | SAD approval | Yes |
 
 <!-- Decision overrides (¶4) — none yet. -->
+
+## 2. Constraints
+
+**Technical.**
+- JavaScript, ESM (`"type": "module"`), Node `>=22` (`package.json`, `.nvmrc`).
+- Express `^5.1.0` — єдина залежність, нових не додаємо.
+- Синхронний `node:fs` (`readdirSync`, `lstatSync`, `readFileSync`) — `node:fs/promises` у репо немає.
+- Без класів: стан живе в замиканні або в plain-обʼєкті; лише named exports.
+
+**Organisational.**
+- Розмір S, route `standard` (`.size`, `.route`), effort ≈ 2–5 PR, ~1 тиждень.
+- Один розробник (maintainer) веде фічу соло, без окремої команди.
+
+**Conventions.**
+- `AGENTS.md` §Межі і §Конвенції; `docs/architecture-map.md` §Conventions.
+- Помилки: `throw new Error('текст')` без кодів і власних класів; `catch` без привʼязки до змінної, дефолт замість прокидання (`lib/sources.js:14`, `test/oracle.js:17`).
+- Нове читання з диска йде функцією в адаптері (`lib/claude/index.js`); нова сторінка складнішого вигляду виносить рендер в окремий файл `views/<page>.js` (`views/AGENTS.md`).
+
+**Regulatory / external.**
+- spec §6.1: класифікація даних — confidential (метадані самі по собі кажуть, над чим і коли працював розробник). Нових персональних полів не створюємо.
+- Security review: Required — фіча вперше дає застосунку обходити диск; перевірка запланована окремим проходом на етапі приймання (spec §6.1).
