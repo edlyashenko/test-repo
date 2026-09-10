@@ -49,3 +49,32 @@ target_surfaces: []
 **Regulatory / external.**
 - spec §6.1: класифікація даних — confidential (метадані самі по собі кажуть, над чим і коли працював розробник). Нових персональних полів не створюємо.
 - Security review: Required — фіча вперше дає застосунку обходити диск; перевірка запланована окремим проходом на етапі приймання (spec §6.1).
+
+## 3. Context and scope
+
+Локальний дашборд `agent-ops-dashboard` читає домашню теку coding-агента Claude Code (`CLAUDE_HOME`, дефолт `~/.claude`) і показує розробнику, що на диску є, не виходячи за межі цієї теки. `session-index` додає на головну сторінку перелік усіх сесій усіх проєктів; за межами фічі лишається сам вміст сесії (крок 2) і вартість у токенах (крок 3).
+
+<!-- brownfield: docs/architecture-map.md fresh (reflects_commit 7ebfee8, HEAD 84e70aa — один docs-коміт попереду, код не змінювався); прочитано замість повторного сканування. -->
+
+**External systems (in / out):**
+
+| Actor or system | Type | Interaction |
+|---|---|---|
+| розробник | Person | HTTP GET на `127.0.0.1:4180`, дивиться на перелік сесій |
+| `CLAUDE_HOME/projects` (файлова система Claude Code) | System (external, вже інтегроване через `lib/claude/index.js`) | синхронне читання метаданих файлів; лише читання, обхід рівно дворівневий |
+
+**C4 Context (L1):**
+
+```mermaid
+C4Context
+    title session-index — System Context
+
+    Person(dev, "Rozrobnyk", "Vidkryvaie lokalnyi dashboard, shukaie svoiu sesiiu")
+    System(app, "agent-ops-dashboard", "Lokalnyi Express-dodatok, renderyt storinky na serveri, slukhaie lyshe 127.0.0.1")
+    SystemDb(home, "CLAUDE_HOME", "Domashnia teka Claude Code z sesiiamy .jsonl; zastosunok lyshe chytaie metadani")
+
+    Rel(dev, app, "Vidkryvaie perelik sesii", "HTTP GET 127.0.0.1:4180")
+    Rel(app, home, "Chytaie imena, rozmir, mtime failiv", "node:fs synkhronno")
+```
+
+Дашборд показує розробнику його власний перелік сесій; жодної третьої сторони, зовнішнього API чи ідентифікаційного провайдера немає — застосунок локальний, петльовий, без облікових записів.
