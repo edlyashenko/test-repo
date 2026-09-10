@@ -1,38 +1,244 @@
+/* agent-ops design tokens. The canon is docs/design-system.md; a page never re-declares a token.
+   Light, cool, one accent. The only loud element on any page is the colored project mark. */
 :root {
-  --bg: #12141a;
-  --panel: #1a1d26;
-  --line: #2a2f3d;
-  --text: #e6e8ee;
-  --muted: #8a91a6;
-  --accent: #7aa2f7;
-  --bad: #f7768e;
-  --good: #9ece6a;
-  --warm: #e0af68;
+  /* surfaces */
+  --bg: #f2f4f6;
+  --surface: #ffffff;
+  --surface-sunken: #e9edf0;
+  --line: #d9dfe5;
+  --line-strong: #b9c3cc;
+
+  /* ink */
+  --text: #16202a;
+  --text-soft: #46525d;
+  --muted: #6b7782;
+
+  /* accent: petrol, used for links, focus and the active control */
+  --accent: #0f6e6b;
+  --accent-strong: #0b5450;
+  --accent-tint: #e1f1ef;
+
+  /* status */
+  --warn: #8a5300;
+  --warn-tint: #fff3dc;
+  --bad: #b42318;
+  --bad-tint: #fde8e6;
+  --good: #1f7a46;
+  --good-tint: #e3f4ea;
+
+  /* project marks: six hues assigned by a stable hash of the project directory name */
+  --mark-0: #0f6e6b;
+  --mark-1: #6b4fbb;
+  --mark-2: #c2410c;
+  --mark-3: #1d6fb8;
+  --mark-4: #a8117a;
+  --mark-5: #5c7a00;
+
+  /* type */
+  --font-ui: "Avenir Next", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data: "SF Mono", "Cascadia Mono", ui-monospace, Menlo, Consolas, monospace;
+  --size-xs: 12px;
+  --size-sm: 13px;
+  --size-md: 15px;
+  --size-lg: 18px;
+  --size-xl: 24px;
+
+  /* spacing scale, 4px based */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+
+  --radius: 6px;
+  --radius-lg: 10px;
+  --page-max: 1120px;
 }
+
 * { box-sizing: border-box; }
+html { color-scheme: light; }
 body {
   margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--bg);
   color: var(--text);
-  font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: var(--size-md)/1.5 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
 }
-.top {
-  display: flex; align-items: baseline; gap: 24px;
-  padding: 14px 24px; border-bottom: 1px solid var(--line);
-}
-.brand { color: var(--accent); font-weight: 700; text-decoration: none; letter-spacing: .04em; }
-nav a { color: var(--muted); text-decoration: none; margin-right: 16px; }
-nav a:hover, nav a.on { color: var(--text); }
-main { padding: 24px; max-width: 1200px; }
-h1 { font-size: 18px; margin: 0 0 4px; }
-h2 { font-size: 14px; margin: 28px 0 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.sub { color: var(--muted); margin: 0 0 20px; }
-.empty { color: var(--muted); padding: 40px 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-strong); text-decoration: underline; text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius); }
+code, .id { font-family: var(--font-data); font-size: var(--size-sm); }
+.num { font-variant-numeric: tabular-nums; font-size: var(--size-sm); }
 
+/* ---- shell ------------------------------------------------------------- */
+.top {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.top-inner, main, .foot-inner {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding-inline: var(--s5);
+}
+.top-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  min-height: 56px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.brand:hover { color: var(--text); text-decoration: none; }
+.brand svg { width: 22px; height: 22px; display: block; }
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 2px var(--s3) 2px var(--s2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-size: var(--size-sm);
+  background: var(--surface-sunken);
+}
+.source::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--good);
+}
+nav { display: flex; gap: var(--s4); margin-left: auto; }
+nav a { color: var(--muted); padding: var(--s2) 0; border-bottom: 2px solid transparent; }
+nav a:hover { color: var(--text); text-decoration: none; }
+nav a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+
+main { flex: 1; padding-block: var(--s6) var(--s7); }
+.foot {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--size-sm);
+}
+.foot-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+  padding-block: var(--s4);
+}
+.foot code { color: var(--text-soft); font-size: var(--size-xs); }
+
+/* ---- page header --------------------------------------------------------- */
+h1 { font-size: var(--size-xl); font-weight: 600; letter-spacing: -0.02em; margin: 0 0 var(--s1); }
+h2 { font-size: var(--size-lg); font-weight: 600; margin: var(--s6) 0 var(--s3); }
+.sub { color: var(--muted); margin: 0 0 var(--s5); max-width: 70ch; }
+.sub strong { color: var(--text); font-weight: 600; }
+
+/* toolbar: controls on the left, notes underneath */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3) var(--s5);
+  margin-bottom: var(--s4);
+}
+.toolbar .label { color: var(--muted); font-size: var(--size-sm); }
+
+/* segmented links: a group of mutually exclusive choices, the current one filled */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.segmented a {
+  padding: var(--s1) var(--s3);
+  color: var(--text-soft);
+  font-size: var(--size-sm);
+  border-right: 1px solid var(--line);
+}
+.segmented a:last-child { border-right: 0; }
+.segmented a:hover { background: var(--surface-sunken); text-decoration: none; color: var(--text); }
+.segmented a[aria-current="true"] { background: var(--accent-tint); color: var(--accent-strong); font-weight: 600; }
+
+/* ---- notices --------------------------------------------------------------- */
+.note, .empty {
+  margin: 0 0 var(--s3);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+.note { background: var(--warn-tint); color: var(--warn); border-color: #f2dcae; }
+.empty {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--text-soft);
+  padding: var(--s6) var(--s5);
+  text-align: center;
+}
+.empty code { display: inline-block; margin-top: var(--s2); color: var(--text); }
+
+/* ---- data table -------------------------------------------------------------- */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
 table { border-collapse: collapse; width: 100%; }
-th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
-tbody tr:hover { background: var(--panel); }
-td a { color: var(--accent); text-decoration: none; }
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line); vertical-align: middle; }
+thead th { color: var(--muted); font-weight: 500; font-size: var(--size-sm); background: var(--surface); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: var(--bg); }
+td.num, th.num { text-align: right; }
+td.id { color: var(--text-soft); max-width: 38ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.when { white-space: nowrap; }
 .dim { color: var(--muted); }
+
+/* project cell: colored mark + the path with its shared prefix quieted */
+.project { display: inline-flex; align-items: center; gap: var(--s2); min-width: 0; }
+.mark { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--mark-0); }
+.mark-1 { background: var(--mark-1); }
+.mark-2 { background: var(--mark-2); }
+.mark-3 { background: var(--mark-3); }
+.mark-4 { background: var(--mark-4); }
+.mark-5 { background: var(--mark-5); }
+.project .prefix { color: var(--muted); }
+.project .name { font-weight: 600; }
+
+/* ---- narrow screens: the table becomes a list of labelled rows ------------------- */
+@media (max-width: 720px) {
+  .top-inner, main, .foot-inner { padding-inline: var(--s4); }
+  .top-inner { flex-wrap: wrap; gap: var(--s3); min-height: 0; padding-block: var(--s3); }
+  nav { margin-left: 0; width: 100%; }
+  thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table, tbody, tr, td { display: block; }
+  tr { padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line); }
+  tr:last-child { border-bottom: 0; }
+  td { padding: var(--s1) 0; border-bottom: 0; }
+  td.num { text-align: left; }
+  td.id { max-width: none; }
+  td[data-label]::before {
+    content: attr(data-label);
+    display: inline-block;
+    min-width: 8ch;
+    margin-right: var(--s2);
+    color: var(--muted);
+    font: var(--size-xs)/1.5 var(--font-ui);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  nav a, .segmented a, tbody tr { transition: background-color .12s ease, color .12s ease; }
+}

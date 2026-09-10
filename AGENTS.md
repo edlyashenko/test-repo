@@ -48,7 +48,7 @@ Git не зберігає mtime. `preverify` і `predemo` вирівнюють �
 - `lib/sources.js`: реєстр джерел. Нове джерело це `lib/<vendor>/index.js`, який викликає `registerSource()`. Реєстрація відбувається на імпорті модуля, тому новий адаптер треба ще й імпортувати в `server.js`; без цього рядка `listSources()` мовчки його не покаже.
 - `lib/claude/index.js`: адаптер Claude Code, віддає `claudeHome()` і `projectsDir()`.
 - `views/`: HTML-шар. Карта шару у `views/AGENTS.md`.
-- `public/style.css`: єдиний стиль, віддається через `express.static`.
+- `public/style.css`: єдиний стиль, віддається через `express.static`. Токени, компоненти й конвенції вигляду описує `docs/design-system.md`.
 - `test/`: `*.test.js` це ворота; `test/helpers.js` піднімає застосунок на фікстурах, `test/oracle.js` рахує факти з диска.
 - `scripts/`: standalone-скрипти на `.mjs`.
 - `fixtures/claude-home/`: синтетичні сесії для тестів і локального запуску.
