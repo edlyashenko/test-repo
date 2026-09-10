@@ -193,3 +193,12 @@ sequenceDiagram
 | Internationalisation | N/A — єдина мова інтерфейсу, `lang="uk"` | `views/layout.js` |
 | Observability | N/A — локальний однокористувацький процес без SLO/пропускної здатності (spec §6 NFR) | spec §6 NFR |
 | Events | N/A — синхронний HTTP request/response, подій немає | — |
+
+## 9. Architecture decisions
+
+| # | Title | Status | Section |
+|---|---|---|---|
+| 0001 | Rebuild the session index synchronously per request, with no cache or persisted store | Accepted | §4 |
+| 0002 | Deduplicate the project scan by realpath and reject symlinks that resolve outside CLAUDE_HOME | Accepted | §4 |
+
+ADR files live under `docs/features/session-index/adr/NNNN-<title>.md`.
