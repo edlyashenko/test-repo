@@ -140,11 +140,13 @@ C4Container
 
 Обидва стратегічні рішення §4 живуть у `lib/claude/index.js:listSessions()` — ADR-0001 фіксує відсутність кешу, ADR-0002 фіксує дедуп за realpath. `server.js` і `views/session-index.js` про ці рішення не знають, вони лише споживають готовий результат.
 
+`views/session-index.js` імпортує `esc`/`empty` з `views/layout.js` для рендеру таблиці й порожнього стану — це робить його **другим споживачем** `views/layout.js` (наразі `views/AGENTS.md` фіксує єдиним споживачем `server.js:6`; той опис варто оновити при реалізації). Сам `views/layout.js` не змінюється — лише зʼявляється другий імпортер його наявних експортів.
+
 ## 6. Runtime view
 
 **Critical flow 1: відкриття переліку сесій (happy path + edge branches inline)**
 
-S-розмір фічі: один потік із `alt`-гілками покриває всі §5 AC замість окремих потоків на кожен edge case (детальне покриття кожного AC — робота стадії `sequences`).
+S-розмір фічі: один потік із `alt`-гілками покриває happy path і безпекові edge-cases; повна деталізація глибини обходу — робота стадії `sequences`.
 
 ```mermaid
 sequenceDiagram
@@ -155,26 +157,27 @@ sequenceDiagram
 
     Rozrobnyk->>Web: GET / (opt. ?limit=N)
     alt limit nepryynyatnyi (ne chyslo, <=0, abo > 1000)
-        Web->>View: renderSessionIndex([], { invalidLimitNote, usedDefault: 50 })
+        Web->>Web: klampuie limit do typovoho (50), gotuie invalidLimitNote
     else limit korektnyi abo vidsutnii
-        Web->>Adapter: listSessions({ limit })
-        Adapter->>Adapter: skanuie projects/ dvorivnevo, lstat kozhnoho zapysu
-        alt symlink vede za mezhi CLAUDE_HOME
-            Adapter->>Adapter: prykhovuie zapys povnistiu (ne dodaie, ne lichyt)
-        else symlink useredyni CLAUDE_HOME
-            Adapter->>Adapter: dedupliuie za realpath (ADR-0002)
-        end
-        alt teka abo fail ne chytaietsia (prava dostupu)
-            Adapter->>Adapter: propuskaie zapys, incrementuie unreadableCount
-        end
-        Adapter-->>Web: { sessions (sort: mtime desc, imia faily as tie-break), totalFound, unreadableCount, truncated }
-        Web->>View: renderSessionIndex(sessions, meta)
+        Note over Web: nichoho ne klampuie, limit yak zaproshenyi abo default 50
     end
+    Web->>Adapter: listSessions({ limit })
+    Adapter->>Adapter: skanuie projects/ rivno na glybyni 2, bere lyshe faily sessionId.jsonl bezposeredno v tetsi proiektu (subagents/ ta hlybshe ne rozghliadaie)
+    alt symlink vede za mezhi CLAUDE_HOME
+        Adapter->>Adapter: prykhovuie zapys povnistiu (ne dodaie, ne lichyt)
+    else symlink useredyni CLAUDE_HOME
+        Adapter->>Adapter: dedupliuie za realpath (ADR-0002)
+    end
+    alt teka abo fail ne chytaietsia (prava dostupu)
+        Adapter->>Adapter: propuskaie zapys, incrementuie unreadableCount
+    end
+    Adapter-->>Web: { sessions (sort: mtime desc, imia faily as tie-break), totalFound, unreadableCount, truncated }
+    Web->>View: renderSessionIndex(sessions, meta z invalidLimitNote za potreby)
     View-->>Web: HTML (tablytsia abo empty())
     Web-->>Rozrobnyk: 200 html (layout + body)
 ```
 
-**Critical flow 2: порожня домашня тека / тека проєктів ще не існує (AC-06, AC-07)** — N/A як окремий потік: покривається тією самою гілкою «limit коректний» вище — `listSessions()` повертає порожній масив `sessions`, `View` рендерить `empty()` замість таблиці; `AC-06` додатково показує повний шлях `CLAUDE_HOME`, який читала сторінка (тека не створюється).
+**Critical flow 2: порожня домашня тека / тека проєктів ще не існує (AC-06, AC-07)** — N/A як окремий потік: покривається тим самим потоком вище — `listSessions()` повертає порожній масив `sessions`, `View` рендерить `empty()` замість таблиці; `AC-06` додатково показує повний шлях `CLAUDE_HOME`, який читала сторінка (тека не створюється).
 
 Обидва участники (`Adapter`, `View`) — контейнери з §5; повідомлення семантичні, без HTTP-деталей (ендпоінт-рівень фіксує стадія `api`, якщо вона знадобиться — для цієї фічі немає нового JSON-контракту).
 
@@ -227,8 +230,8 @@ ADR files live under `docs/features/session-index/adr/NNNN-<title>.md`.
 | Risk / debt | Severity | Mitigation | Owner |
 |---|---|---|---|
 | Дедуп за realpath на кожен символічний запис коштує системної викличкою; за нетипової вкладеності посилань це може уповільнити скан | Low | Обхід рівно дворівневий (`projects/` → сесії), символічні посилання трапляються лише серед записів теки проєктів — кількість викликів обмежена кількістю проєктів, не сесій; ADR-0002 фіксує стратегію | maintainer |
-| Стеля 1000 рядків і орієнтир 400 ms на 200 сесій узяті як розумні дефолти, а не з виміру (spec §8 OQ) | Open question | Resolve before `/sdd:plan-tests`; лишаємо як орієнтир до першого заміру, чи входить до воріт вирішує `plan-tests` | maintainer |
-| Тестовий оракул (`test/oracle.js`) використовує `lstat` і наразі пропускає символічні посилання; перелік має проходити ті, що ведуть усередину `CLAUDE_HOME` (ADR-0002) — оракул потребує узгодження під цю поведінку (spec §8 OQ) | Open question | Resolve before `/sdd:tasks`; узгодити оракул під нову поведінку симлінків, тест на тимчасовій теці, пропуск із явним повідомленням, якщо створити посилання не вдалося (Windows-права) — default уже зафіксовано в spec | maintainer |
+| Стеля 1000 рядків і орієнтир 400 ms на 200 сесій узяті як розумні дефолти, а не з виміру — перенесено зі spec §8 (там уже має owner+due, тут не нове «Винести у відкрите питання» цього проходу) | Low | Resolve before `/sdd:plan-tests`; лишаємо як орієнтир до першого заміру, чи входить до воріт вирішує `plan-tests` | maintainer |
+| Тестовий оракул (`test/oracle.js`) використовує `lstat` і наразі пропускає символічні посилання; перелік має проходити ті, що ведуть усередину `CLAUDE_HOME` (ADR-0002) — перенесено зі spec §8 (там уже має owner+due, тут не нове «Винести у відкрите питання» цього проходу) | Low | Resolve before `/sdd:tasks`; узгодити оракул під нову поведінку симлінків, тест на тимчасовій теці, пропуск із явним повідомленням, якщо створити посилання не вдалося (Windows-права) — default уже зафіксовано в spec | maintainer |
 | Адаптер `lib/claude/index.js` наразі реєструє лише `id`, `label`, `home`; контракт `lib/sources.js` вимагає ще `listSessions()` і `readSession(id)` — ця фіча закриває `listSessions()`, `readSession()` лишається боргом кроку 2 | Low | Крок 2 роадмапи (`docs/roadmap.md`) явно закриває цю прогалину; не блокує `session-index` | maintainer |
 
 **Accepted debt (acceptable in v1, plan to fix later):**
