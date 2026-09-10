@@ -97,3 +97,45 @@ C4Context
 - **Формат часу зміни (spec §8 OQ, дефолт уже узгоджений)** — абсолютний локальний час: стабільний у тестах, не залежить від моменту відкриття сторінки.
 
 Кожне з двох стратегічних рішень трасується у §5 (модульні межі), §6 (потік виконання) і §10 (сценарії якості) нижче.
+
+## 5. Building block view
+
+Наявний простий шар: адаптер джерела (`lib/claude/index.js`) володіє читанням з диска, `server.js` лишається тонким маршрутом, `views/` — HTML-шар без знання про джерела. Нового модуля не заводимо (easy-режимне припущення) — S-розмір фічі вкладається в наявну форму: логіка скану йде в адаптер (конвенція «нове читання з диска → функція в адаптері»), рендер таблиці виносимо в окремий `views/session-index.js`, бо `views/AGENTS.md` прямо каже: «складніша сторінка виносить свою функцію в окремий файл».
+
+**Internal decomposition:**
+
+```
+lib/claude/index.js       # + listSessions({ limit }) — synchronous two-level scan (ADR-0001),
+                           #   realpath dedup + reject external symlinks (ADR-0002), sort, limit
+server.js                 # GET / reads ?limit, calls listSessions(), passes result to the view
+views/session-index.js    # NEW: pure render function — table markup + empty()/error notes, esc() everything
+views/layout.js           # unchanged — esc, layout, empty stay generic chrome
+```
+
+**C4 Container (L2):**
+
+```mermaid
+C4Container
+    title session-index — Containers
+
+    Person(dev, "Rozrobnyk")
+
+    Container_Boundary(app, "agent-ops-dashboard") {
+        Container(web, "server.js", "Express 5 / ESM", "Marshrut GET /, chytaie ?limit, skladaie storinku cherez layout()")
+        Container(view, "views/session-index.js", "Template strings", "Renderyt tablytsiu sesii, empty i error stany")
+        Container(layout, "views/layout.js", "Template strings", "Yedynyi HTML-karkas: esc, layout, empty")
+        Container(adapter, "lib/claude/index.js", "ESM module", "listSessions(): dvorivnevyi skan, realpath-dedup, sort, limit")
+        Container(registry, "lib/sources.js", "ESM module", "Reiestr dzherel; Map u zamykanni")
+    }
+
+    ContainerDb(home, "CLAUDE_HOME/projects", "Filesystem", "Teky proektiv + faily sesii .jsonl; lyshe metadani")
+
+    Rel(dev, web, "HTTP GET / (opt. ?limit)", "127.0.0.1:4180")
+    Rel(web, adapter, "listSessions({ limit })")
+    Rel(web, view, "renderSessionIndex(sessions, meta)")
+    Rel(web, layout, "layout({ body })")
+    Rel(adapter, registry, "reiestruietsia cherez registerSource() na importi")
+    Rel(adapter, home, "readdirSync / lstatSync / realpathSync, synkhronno, lyshe chytannia")
+```
+
+Обидва стратегічні рішення §4 живуть у `lib/claude/index.js:listSessions()` — ADR-0001 фіксує відсутність кешу, ADR-0002 фіксує дедуп за realpath. `server.js` і `views/session-index.js` про ці рішення не знають, вони лише споживають готовий результат.
