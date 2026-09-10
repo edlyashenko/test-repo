@@ -181,3 +181,15 @@ sequenceDiagram
 ## 7. Deployment view
 
 <!-- N/A: reuses existing deployment unit — той самий локальний Express-процес на 127.0.0.1:4180, ні нового процесу, ні нової інфраструктури фіча не додає (easy-режимне припущення). -->
+
+## 8. Crosscutting concepts
+
+| Concept | Convention | Where defined |
+|---|---|---|
+| Logging | немає структурованого логування; єдиний `console.log` при старті сервера | `server.js` |
+| Authentication | немає — локальний петльовий інтерфейс, без облікових записів | `server.js` (bind `127.0.0.1`), `AGENTS.md` §Межі |
+| Error handling | `throw new Error('текст')` без кодів і власних класів; читання джерела — best-effort skip + лічильник замість прокидання | `lib/sources.js:14`, `test/oracle.js:17` |
+| ID strategy | `sessionId` — UUID у назві файлу `<sessionId>.jsonl`, готовий з диска, не генерується застосунком | `CONTEXT.md` §Glossary |
+| Internationalisation | N/A — єдина мова інтерфейсу, `lang="uk"` | `views/layout.js` |
+| Observability | N/A — локальний однокористувацький процес без SLO/пропускної здатності (spec §6 NFR) | spec §6 NFR |
+| Events | N/A — синхронний HTTP request/response, подій немає | — |
