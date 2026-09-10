@@ -139,3 +139,41 @@ C4Container
 ```
 
 Обидва стратегічні рішення §4 живуть у `lib/claude/index.js:listSessions()` — ADR-0001 фіксує відсутність кешу, ADR-0002 фіксує дедуп за realpath. `server.js` і `views/session-index.js` про ці рішення не знають, вони лише споживають готовий результат.
+
+## 6. Runtime view
+
+**Critical flow 1: відкриття переліку сесій (happy path + edge branches inline)**
+
+S-розмір фічі: один потік із `alt`-гілками покриває всі §5 AC замість окремих потоків на кожен edge case (детальне покриття кожного AC — робота стадії `sequences`).
+
+```mermaid
+sequenceDiagram
+    actor Rozrobnyk
+    participant Web as server.js
+    participant Adapter as lib/claude/index.js
+    participant View as views/session-index.js
+
+    Rozrobnyk->>Web: GET / (opt. ?limit=N)
+    alt limit nepryynyatnyi (ne chyslo, <=0, abo > 1000)
+        Web->>View: renderSessionIndex([], { invalidLimitNote, usedDefault: 50 })
+    else limit korektnyi abo vidsutnii
+        Web->>Adapter: listSessions({ limit })
+        Adapter->>Adapter: skanuie projects/ dvorivnevo, lstat kozhnoho zapysu
+        alt symlink vede za mezhi CLAUDE_HOME
+            Adapter->>Adapter: prykhovuie zapys povnistiu (ne dodaie, ne lichyt)
+        else symlink useredyni CLAUDE_HOME
+            Adapter->>Adapter: dedupliuie za realpath (ADR-0002)
+        end
+        alt teka abo fail ne chytaietsia (prava dostupu)
+            Adapter->>Adapter: propuskaie zapys, incrementuie unreadableCount
+        end
+        Adapter-->>Web: { sessions (sort: mtime desc, imia faily as tie-break), totalFound, unreadableCount, truncated }
+        Web->>View: renderSessionIndex(sessions, meta)
+    end
+    View-->>Web: HTML (tablytsia abo empty())
+    Web-->>Rozrobnyk: 200 html (layout + body)
+```
+
+**Critical flow 2: порожня домашня тека / тека проєктів ще не існує (AC-06, AC-07)** — N/A як окремий потік: покривається тією самою гілкою «limit коректний» вище — `listSessions()` повертає порожній масив `sessions`, `View` рендерить `empty()` замість таблиці; `AC-06` додатково показує повний шлях `CLAUDE_HOME`, який читала сторінка (тека не створюється).
+
+Обидва участники (`Adapter`, `View`) — контейнери з §5; повідомлення семантичні, без HTTP-деталей (ендпоінт-рівень фіксує стадія `api`, якщо вона знадобиться — для цієї фічі немає нового JSON-контракту).
