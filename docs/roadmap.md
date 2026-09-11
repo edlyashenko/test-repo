@@ -76,6 +76,7 @@ flowchart LR
   s2 -->|JSON віддає аналітику сесії| s4
   s1 -->|контракт адаптера джерела| s5["5 · Друге джерело, Codex"]
   s2 -->|хронологію віддає адаптер, не сторінка| s5
+  s4 -->|API і CSV несуть джерело| s5
 ```
 
 ## Execution path
@@ -85,7 +86,8 @@ flowchart LR
 | 1 | `session-index` | `lib/claude/`, `lib/store.js`, `views/session-index.js`, `public/style.css`; єдиний крок у хвилі, паралелити нічого | Дашборд, сховище назв і закритий перелік полів журналу |
 | 2 | `session-page` | Нові маршрути `/sessions/:id` і `/projects/:dir` та власні view; дашборд лише дістає посилання | Хронологія й аналітика однієї сесії |
 | 3 | `overview` | Нова сторінка `/overview`, `lib/pricing.js` і плитка вартості на головній | Витрати за період і сортування за вартістю |
-| 4 | `workspace`, `codex-source` | `workspace` живе у `lib/store.js`, сторінці редагування та `/api`; `codex-source` живе у новому `lib/codex/` і `fixtures/codex-home/`. Спільного файла немає, крім реєстру джерел | Робочий простір і друге джерело з бейджем і фільтром |
+| 4 | `workspace` | `lib/store.js`, сторінка редагування, `/api` і `overview.csv`; єдиний крок у хвилі | Теги, нотатки, закладки й машинний доступ до чисел |
+| 5 | `codex-source` | `lib/sources.js`, новий `lib/sessions.js`, `lib/codex/`, `fixtures/codex-home/`, `test/helpers.js`, `scripts/demo.mjs`, `scripts/pin-fixture-mtimes.mjs`, бейдж і фільтр джерела в `server.js` та у views. Паралельно з `workspace` не йде: `lib/sessions.js` живить `/api` з кроку 4 | Друге джерело з бейджем і фільтром, без коду під одне джерело |
 
 ## Shipped
 
