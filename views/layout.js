@@ -27,6 +27,8 @@ const ICONS = {
   search: '<circle cx="7" cy="7" r="4"/><path d="M10 10l3.5 3.5"/>',
   pencil: '<path d="M3 13l.8-3.2 7.4-7.4a1.3 1.3 0 0 1 1.8 0l.6.6a1.3 1.3 0 0 1 0 1.8L6.2 12.2z"/><path d="M9.8 3.8l2.4 2.4"/>',
   tag: '<path d="M2.5 3.5v4.4l6.1 6.1 5.4-5.4-6.1-6.1H3.5a1 1 0 0 0-1 1z"/><circle cx="5.5" cy="6.5" r=".9"/>',
+  sun: '<circle cx="8" cy="8" r="3"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/>',
+  moon: '<path d="M13 10.2A5.5 5.5 0 0 1 5.8 3a5.5 5.5 0 1 0 7.2 7.2z"/>',
 };
 
 const SPRITE = `<svg hidden aria-hidden="true">${Object.entries(ICONS)
@@ -64,6 +66,7 @@ export function layout({ title, body, nav = '', head = '', current = '/', source
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:">
 <title>${esc(title)}</title>
 <link rel="icon" href="${FAVICON}">
+<script src="/theme.js"></script>
 <link rel="stylesheet" href="/style.css">
 ${head}
 </head>
@@ -73,7 +76,7 @@ ${SPRITE}
   <div class="top-inner">
     <a class="brand" href="/">${BRAND_MARK}<span>agent-ops</span></a>
     ${sourceBadge}
-    <nav>${renderNav(current)}${nav}</nav>
+    <nav>${renderNav(current)}${nav}<button class="theme-toggle" type="button" data-theme-toggle title="Theme: follows your system. Click to switch" aria-label="Switch theme"><span class="when-light">${icon('moon')}</span><span class="when-dark">${icon('sun')}</span></button></nav>
   </div>
 </header>
 <main>
