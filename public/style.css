@@ -171,6 +171,9 @@ h2 .icon { color: var(--accent); }
 }
 .brand:hover { color: var(--text); text-decoration: none; }
 .brand svg { width: 22px; height: 22px; display: block; }
+/* The icon sprite is an inline <svg hidden>; `hidden` does not apply to inline SVG in
+   Chrome, so without this the empty sprite renders as a 300x150 box above the header. */
+svg[hidden] { display: none; }
 .source {
   display: inline-flex;
   align-items: center;
