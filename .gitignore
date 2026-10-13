@@ -6,3 +6,9 @@ node_modules/
 .claude/*.local.md
 .worktrees/
 .claude/settings.local.json
+# Особисті результати анкет і експорт уроку 2: зберігай у себе, у публічний репо не клади
+result.json
+result-final.json
+ai-final.md
+ai-first-step.md
+lesson-2-context-result.md

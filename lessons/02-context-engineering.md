@@ -8,8 +8,8 @@
 
 ## Що має бути готове
 
-- Редактор, Git і Node.js 24 LTS (підійде 22 або новіший): [VS Code](https://code.visualstudio.com/download), [Git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/en/download). Після встановлення відкрий новий термінал.
-- Доступ до [репозиторію пакета](https://github.com/genkovich/agentic-engineering-mini-kit) у своєму GitHub-акаунті. Якщо бачиш 404, перевір акаунт і прийняте запрошення; публічний чекліст доступу до приватного коду не дає, звернися до команди курсу.
+- Редактор, Git і Node.js 24 LTS (підійде 22 або 26): [VS Code](https://code.visualstudio.com/download), [Git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/en/download). Після встановлення відкрий новий термінал.
+- [Репозиторій пакета](https://github.com/genkovich/agentic-engineering-mini-kit) публічний, завантажити його можна без запрошень.
 - Власний доступ до одного агента: Claude Code (основний показ у відео), Codex CLI або Cursor. Виклики агента оплачуються за твоїм тарифом; сам дашборд і тести модель не викликають.
 - Тека для навчальних проєктів, яка не лежить усередині іншого Git-репозиторію.
 
@@ -84,7 +84,7 @@ git status --short
 Після ZIP відкрий термінал у розпакованій теці пакета і виконай:
 
 ```sh
-git init
+git init -b main
 git rev-parse --show-toplevel
 ```
 
