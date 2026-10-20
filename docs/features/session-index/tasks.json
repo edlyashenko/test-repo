@@ -1,0 +1,7 @@
+{
+  "slug": "session-index",
+  "tasks": [
+    { "id": "T1", "title": "listSessions в адаптері Claude", "acs": ["AC-01", "AC-02", "AC-03"], "files_hint": ["lib/claude/index.js"] },
+    { "id": "T2", "title": "Маршрут /api/sessions і тести", "deps": ["T1"], "acs": ["AC-01", "AC-03"], "files_hint": ["server.js", "test/session-index.test.js"] }
+  ]
+}

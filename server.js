@@ -1,7 +1,7 @@
 import express from 'express';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { claudeHome } from './lib/claude/index.js';
+import { claudeHome, listSessions } from './lib/claude/index.js';
 import { listSources } from './lib/sources.js';
 import { layout, empty } from './views/layout.js';
 
@@ -12,6 +12,11 @@ app.use(express.static(join(here, 'public')));
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, sources: listSources(), claudeHome: claudeHome() });
+});
+
+app.get('/api/sessions', (req, res) => {
+  const limit = Number.parseInt(req.query.limit, 10) || 50;
+  res.json({ sessions: listSessions({ limit }) });
 });
 
 app.get('/', (req, res) => {
